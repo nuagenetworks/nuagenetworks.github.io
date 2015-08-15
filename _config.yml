@@ -12,8 +12,9 @@ theme:
 
   # Header and footer text
   header_text: >
-     <h3>opensource @ nuagenetworks</h3>
-     <p>All the community news related to our open source softwares</p>
+    <pre><code class="language-js" data-lang="python"><span class="k">import</span> <span>nuagenetworks.opensource</span></code></pre>
+
+    <p>Everything related to our open source software and libraries</p>
 
   header_text_feature_image:
   footer_text: >

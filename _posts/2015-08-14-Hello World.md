@@ -2,6 +2,6 @@
 layout: post
 title: Hello World
 ---
-{% highlight js %}
-console.debug("much more to come very soon!");
-{% endhighlight %}
+Much more to come very soon!
+
+Stay tuned.
