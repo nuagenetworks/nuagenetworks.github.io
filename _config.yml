@@ -1,11 +1,12 @@
 # SITE CONFIGURATION
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://example.com" # the base hostname & protocol for your site
+url: "http://nuagenetworks.net" # the base hostname & protocol for your site
+include: ['_static']
 
 # THEME-SPECIFIC CONFIGURATION
 theme:
   # Meta
-  title: nuagenetworks
+  title: Nuage Networks
   avatar: avatar.png
   gravatar: # Email MD5 hash
   description: "opensource @ nuagenetworks" # used by search engines
@@ -38,7 +39,7 @@ theme:
   stack_exchange:  # Full URL
   steam:
   tumblr:
-  twitter: "twitter"
+  twitter: "nuagenetworks"
   wordpress:
   youtube:
 

@@ -8,9 +8,15 @@
   font-size: 1.2em;
   text-align: center;
   color: $header-desc-text-color;
+  margin-bottom: 20px;
 }
 .call-out p:last-child {
   margin-bottom: 0;
+}
+.call-out pre {
+  background: transparent;
+  border: 0;
+  font-size: 180%;
 }
 // Post listing
 .posts {
