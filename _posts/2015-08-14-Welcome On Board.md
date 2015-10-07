@@ -1,11 +1,10 @@
 ---
 layout: post
 title: Welcome on board !
-excerpt: We are very pleased to announce that Nuage Networks is starting to share some of its work on GitHub...<br>
+author: Antoine Mercadal
+callout_image: header-post.jpg
 ---
-Dear all,
-
-We are very pleased to announce that Nuage Networks is starting to share some of its work on GitHub.
+Hello World! We are very pleased to announce that Nuage Networks is starting to share some of its work on GitHub.
 
 Today, we released the following libraries:
 

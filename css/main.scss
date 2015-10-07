@@ -8,11 +8,13 @@
 @import 'base/variables';
 @import 'base/global';
 @import 'base/utility';
+@import 'base/general';
 
 // Posts
+@import 'layouts/post';
 @import 'layouts/posts';
-@import 'layouts/index';
 
 // Partials
+@import 'includes/callout';
 @import 'includes/header';
 @import 'includes/footer';

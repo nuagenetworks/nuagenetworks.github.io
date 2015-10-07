@@ -1,0 +1,29 @@
+// Header text feature
+.call-out {
+    @extend %padding-small;
+    display: inline-block;
+    width: 100%;
+    background-color: #333;
+    background-size: cover;
+    font-size: 1.2em;
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+    padding-top: 30px;
+    position: fixed;
+    z-index: -1000;
+    height: 300px;
+    pre {
+        background: transparent;
+        border: 0;
+        padding: 0;
+        margin-bottom: 0;
+      }
+}
+
+@media (max-width: 766px) {
+    .call-out {
+        font-size: 80%;
+//        padding-top: 30px;
+    }
+}

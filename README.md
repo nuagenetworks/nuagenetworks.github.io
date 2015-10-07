@@ -1,6 +1,6 @@
-# VSPK Community information portal
+# Nuage Networks Open Source Community Portal
 
 http://nuagenetworks.github.io/
 
-This is the repo for the Documentation and Information around our VSPK and other Opensource projects
+This is the repo for the Documentation and Information around our open source projects.
 
