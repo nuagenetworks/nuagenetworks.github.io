@@ -1,69 +1,68 @@
 .site-header {
-  padding: 20px;
-  z-index: 1000;
-  margin-bottom: 0;
-  padding-top: 28px;
-  background: rgba(50, 50, 50, 0.8);
-  display: inline-block;
-  float: left;
-  width: 100%;
-  height: 80px;
-  position: fixed;
-
-  a {
-    color: #f3f3f3;
-  }
-
-  .avatar {
-    height: 3em;
-    width: 3em;
+    padding: 20px;
+    z-index: 1000;
+    margin-bottom: 0;
+    padding-top: 28px;
+    background: rgba(50, 50, 50, 0.8);
+    display: inline-block;
     float: left;
-    margin-top: -0.8em;
-    border-radius:0.2em;
-    margin-right: 1em;
-  }
+    width: 100%;
+    height: 80px;
+    position: fixed;
+    -webkit-backdrop-filter: blur(10px);
 
-  .site-title {
-    float: left;
-    font-weight: bold;
-    font-size: 1em;
-    line-height: 1.5;
-  }
-  @media (max-width: 766px) {
-    .site-title {
-      font-size: 1em;
+    a {
+        color: #f3f3f3;
     }
+
     .avatar {
-        width: 2.5em;
-        height: 2.5em;
-        margin-top: -.47em;
-    }
-  }
-
-
-
-  .site-nav {
-    ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      line-height: 1.5;
-      float: right;
-      text-align: right;
-    }
-    li {
-      display: inline;
-      float: left;
-      margin-right: 0.4em;
-    }
-    @media (max-width: 769px) {
-      ul {
-        display: none;
+        height: 3em;
+        width: 3em;
         float: left;
-        padding-top: $padding-small;
-        text-align: left;
-        width: 100%;
-      }
+        margin-top: -0.8em;
+        border-radius:0.2em;
+        margin-right: 1em;
     }
-  }
+
+    .site-title {
+        float: left;
+        font-weight: bold;
+        font-size: 1em;
+        line-height: 1.5;
+    }
+    @media (max-width: 766px) {
+        .site-title {
+            font-size: 1em;
+          }
+          .avatar {
+              width: 2.5em;
+              height: 2.5em;
+              margin-top: -.47em;
+          }
+      }
+
+    .site-nav {
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            line-height: 1.5;
+            float: right;
+            text-align: right;
+        }
+        li {
+            display: inline;
+            float: left;
+            margin-right: 0.4em;
+        }
+        @media (max-width: 769px) {
+            ul {
+                display: none;
+                float: left;
+                padding-top: $padding-small;
+                text-align: left;
+                width: 100%;
+            }
+        }
+    }
 }
