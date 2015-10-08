@@ -1,14 +1,26 @@
-(function(){
+(function() {
+    var lastOffset = 0;
+
     $(window).scroll(function()
     {
         var offset =  window.pageYOffset,
-            newTop = - window.pageYOffset / 2;
+            newTop = - lastOffset / 2;
+            goingUp = offset < lastOffset;
+            lastOffset = offset;
 
-        $(".call-out").css("top",  newTop)
+        if (newTop > -400)
+            $(".call-out").css("top", newTop)
 
-        if (newTop <= -150)
-            $(".site-header").css("top", newTop + 150 )
-        else
+        if (goingUp)
+        {
             $(".site-header").css("top", 0)
+        }
+        else
+        {
+            if (newTop <= -150)
+                $(".site-header").css("top", -150 )
+            else
+                $(".site-header").css("top", 0)
+        }
     })
 })()

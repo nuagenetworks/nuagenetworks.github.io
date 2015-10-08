@@ -9,6 +9,8 @@
     width: 100%;
     height: 80px;
     position: fixed;
+    -webkit-transition: top 0.5s;
+    transition: top 0.5s;
     -webkit-backdrop-filter: blur(10px);
 
     a {
