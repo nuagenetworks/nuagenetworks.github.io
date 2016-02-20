@@ -23,7 +23,7 @@ So I started porting Bambou to Go, and I came from being lost, rage quitting, co
 
 But as the Python Bambou, Go-Bambou by itself doesn’t do much. So we’ve also pushed an update to Monolithe to make it able to generate the Go version of the `vspk`. In this post I will go from the entire installation to a real world example.
 
-# Let’s start!
+# Let’s Start!
 
 ## Install Tools
 
@@ -45,7 +45,7 @@ Finally source that file:
 
     (mono)$ source monorc
 
-## Generate the Go vspk
+## Generate the Go VSPK
 
 You can now generate the Go source code of the `vspk`:
 
@@ -57,7 +57,7 @@ You can now generate the Go source code of the `vspk`:
 
 Voilà! You can check the `codegen/go` directory to see the generated sources.
 
-## Prepare your Go workspace
+## Prepare rour Go Workspace
 
 Of course, you need to have [Go installed](https://golang.org/dl/) on your system and Go workspace.
 
@@ -67,7 +67,7 @@ Declare the `GOPATH`:
 
     $ export GOPATH=`pwd`
 
-## Install Go-Bambou and the vspk
+## Install Go-Bambou and the Go VSPK
 
 First, install the Go-Bambou package:
 
@@ -393,7 +393,7 @@ Once more, run it and you'll see:
     New Event! DELETE on 06a274f5-7d05-4625-bffb-e47835fc0721: user
     New Event! DELETE on 6d428c5b-f506-4af3-954f-28ec86163d32: group
 
-# Last words
+# Going Further
 
 As you can see, it is really easy to use. If you use the Python version of the `vspk` it should feel very familiar. Now with the power of Go, you can of course run all the functions in Go Routines and do a lot of concurent operations. If you want to learn Go a bit more, I suggest the follwing readings:
 
