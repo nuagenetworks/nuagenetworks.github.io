@@ -5,23 +5,23 @@ author: Antoine Mercadal
 callout_image: posts/header-go-bambou-go.png
 ---
 
-[Go](https://goland.org) is a rising language that has a concurrency system built-in the syntax itself, produces very portable binaries, and compiles very fast. It makes a perfect sense to use in the context of system and server programing.
+[Go](https://goland.org) is a rising language that has a built-in concurrency system, produces very portable binaries, and compiles very fast. It makes a perfect sense to use in the context of system and server programing.
 
 At Nuage Networks, we’ve released the `vspk` a while back. It is Python based auto generated framework that allows the users to interact with our VSD apis in a very efficient way, by completely abstracting the ReST communication system.
 
-The auto generated code, coming from [Monolithe](https://github.com/nuagenetworks/monolithe), relies on Bambou that provides all the needed communication interfaces and make the code generation easy and generic.
+The auto generated code, coming from [Monolithe](https://github.com/nuagenetworks/monolithe), relies on [Bambou](https://github.com/nuagenetworks/bambou) which provides all the needed communication interfaces and make the code generation easy and generic.
 
-As I stated in a previous post, Monolithe is, in its core, a tool that takes some formatted api specifications (like the [VSD Specifications](https://github.com/nuagenetworks/vsd-api-specifications) used to generate the `vspk`), and outputs some code, based on Jinja templates.
+As I stated in a previous post, Monolithe is, in its core, a tool that takes some formatted api specifications as input (like the [VSD Specifications](https://github.com/nuagenetworks/vsd-api-specifications) used to generate the `vspk`), and outputs some code, based on some Jinja templates.
 
-We always had the plan to make Monolithe being able to generate SDKs in other language, as it was just a matter of rewiring some code so it could take a different set of templates. That is not the big part. The big part is to port the Bambou library in a different langage.
+We always had the plan to make Monolithe being able to generate SDKs in other languages, as it was just a matter of rewiring some code so it could take a different set of templates. That's not the big part. The big part is to port the Bambou library in a different langage.
 
-Bambou is coming from our internal UI Cappuccino Framework, RESTCappuccino. Cappuccino is an Object Oriented language, as well as Python, so the port was fairly easy. But when it comes to Go, it’s a bit different. Go is OO language in some extends, but doesn’t have inheritance, subtyping and things like that. Plus I never wrote a single line of Go. So I had to adapt, and learn a lot of things. And what’s a better way to learn than having a real project to work on?
+Bambou is coming from our internal UI Cappuccino Framework, RESTCappuccino. Cappuccino is an Object Oriented language, as well as Python, so the port was fairly easy. But when it comes to Go, it’s a bit different. Go is also an OO language in some extends, but doesn’t have inheritance, subtyping and things like that. Plus, I never wrote a single line of Go. So I had to adapt and learn a lot of things. And what’s more of a better way to learn than having a real world project to work on?
 
-So I started working on porting Bambou to Go, and I came from being lost, to rage quitting, to coming back and trying harder to finally falling in love with Go.
+So I started porting Bambou to Go, and I came from being lost, rage quitting, coming back and trying harder to finally falling in love with Go. It's a very good language, and I was able to make something really simple and beautiful.
 
-Today, I’m glad to announce that [Go-Bambou is available on GitHub](https://github.com/nuagenetworks/go-bambou).
+> Today, I’m glad to announce that [Go-Bambou is available on GitHub](https://github.com/nuagenetworks/go-bambou)!
 
-But as Bambou, Go-Bambou by itself doesn’t do much. So we’ve also pushed an update to Monolithe to make it able to generate the Go version of the `vspk`.
+But as the Python Bambou, Go-Bambou by itself doesn’t do much. So we’ve also pushed an update to Monolithe to make it able to generate the Go version of the `vspk`. In this post I will go from the entire installation to a real world example.
 
 # Let’s start!
 
@@ -33,18 +33,21 @@ As a reminder, let’s install the needed stuff in a virtual env (I’m using [`
     (mono)$ pip install git+https://github.com/nuagenetworks/monolithe.git
     (mono)$ pip install git+https://github.com/nuagenetworks/vspkgenerator.git
 
-Let's create a little rc file that will avoid having to type to many options:
+Let's create a little rc file that will avoid having to type too many options:
 
     (mono)$ cat > monorc << eof
     export MONOLITHE_GITHUB_API_URL=https://api.github.com
     export MONOLITHE_GITHUB_ORGANIZATION=nuagenetworks
     export MONOLITHE_GITHUB_REPOSITORY=vsd-api-specifications
     eof
+
+Finally source that file:
+
     (mono)$ source monorc
 
 ## Generate the Go vspk
 
-Now you can generate the Go source code of the `vspk`:
+You can now generate the Go source code of the `vspk`:
 
     (mono)$ generate-vspk -b master --language go
     [log] retrieving specifications from github "nuagenetworks/vsd-api-specifications@master"
@@ -52,22 +55,25 @@ Now you can generate the Go source code of the `vspk`:
     [log] assembling all packages...
     [success] vspk generation complete and available in "./codegen/go"
 
-And voila! You can check in the `codegen/go` directory to see the sources.
+Voilà! You can check the `codegen/go` directory to see the generated sources.
 
 ## Prepare your Go workspace
 
-Of course, you need [Go installed](https://golang.org/dl/) on your system and Go workspace.
+Of course, you need to have [Go installed](https://golang.org/dl/) on your system and Go workspace.
 
 If you are not familliar with Go, you should take a look at [this video](https://www.youtube.com/watch?v=XCsL89YtqCs) to understand workspaces a bit more in detail.
 
-If you are familliar, you certainly have a workspace already in place.
+Declare the `GOPATH`:
 
     $ export GOPATH=`pwd`
-    $ go get github.com/nuagenetworks/go-bambou/bambou
 
 ## Install Go-Bambou and the vspk
 
-Now copy or move the generated Monolithe source code in your workspace:
+First, install the Go-Bambou package:
+
+    $ go get github.com/nuagenetworks/go-bambou/bambou
+
+Now copy or move the generated source code into your workspace:
 
     $ mkdir -p src/github.com/nuagenetworks/
     $ mv codegen/go src/github.com/nuagenetworks/go-vspk
@@ -86,9 +92,9 @@ Cool! Now, you have Go-Bambou and the vspk installed in your environment. You ar
 
 # Code!
 
-Now we have everything generated and installed, how about trying it?
+We have everything generated and installed, so how about trying it?
 
-For the following example you need to have a VSD server installed. But remember, nothing prevent you to create your own api server, and generate a Go sdk according to a different set of specifications. We may even help you soon about that ;)
+For the following example you'll need to have a VSD server installed. But remember, nothing prevents you to create your own api server, and to generate a Go SDK from a different set of specifications. We may even help you soon about that ;)
 
 First, create a new package:
 
@@ -96,7 +102,7 @@ First, create a new package:
     $ cd src/github.com/primalmotion/vspk-example
     $ touch vspk-example.go
 
-Let's write a basic program that can open a new session:
+Let's write a basic program that can open a new VSD session:
 
 {% highlight go %}
     package main
@@ -121,7 +127,7 @@ This is a very simple program that will start a session on a VSD, and print the 
     $ go build && ./vspk-example
     APIKey: f7598dbf-08dd-40af-96dd-94d364c29eda
 
-That was easy. Now let's the enterprise named `Triple A`. Modify the code so it looks like:
+That was easy. Now let's retrieve the enterprise named `Triple A` (of course adapt to your own environment). Modify the code so it looks like:
 
 {% highlight go %}
     package main
@@ -151,14 +157,14 @@ That was easy. Now let's the enterprise named `Triple A`. Modify the code so it 
     }
 {% endhighlight %}
 
-This time, we are using a filter. Filter and other information like paginaltion are given through the `bambou.FetchingInfo` object. It will be used to forge the request, and will be populated back when the request is complete, so you can see the total number of entities and other informations. You'll also notice that `root.Enterprises()` returns an Error in addition to the list. If this error is not nil, then something bad happened.
+This time, we are using a filter. Filter and other information like pagination are given through the `bambou.FetchingInfo` structure. It will be used by Bambou to forge the request, and will be populated back when the request is complete with additional information, so you can see the total number of entities and other things like that. You'll also notice that `root.Enterprises()` returns an `*Error` in addition to the list. If this error is not nil, then something bad happened.
 
 Run it and you'll see:
 
     $ go build && ./vspk-example
     1 enterprise found! ID: 4b6b5c3f-304e-4f06-8dbc-811767b1be27
 
-Now, let's create a User in that enterprise in that enterprise:
+Now, let's create a User in that enterprise:
 
 {% highlight go %}
     package main
@@ -170,6 +176,9 @@ Now, let's create a User in that enterprise in that enterprise:
     )
 
     func main() {
+
+        // uncomment for debug logging
+        // bambou.Logger().SetLevel(0)
 
     	session, root := vspk.NewSession("csproot", "csproot", "csp",
             "https://api.nuagenetworks.net:8443")
@@ -203,14 +212,14 @@ Now, let's create a User in that enterprise in that enterprise:
     }
 {% endhighlight %}
 
-This is again straightforward. We create a new `vspk.User` using `vspk.NewUser()`, then we set some attributes, and we create it under the enterprise using `e.CreateUser()`. The user will be created, his `ID` will be printed, and we delete it (so we can rerun the program without conflicts) using `u.Delete()`.
+This is again very straightforward. We create a new `vspk.User` using `vspk.NewUser()`,  we set some attributes and we create it under the enterprise using `e.CreateUser()`. The user will be created, its `ID` will be printed, then we delete it, so we can run the program again without having any conflict, using `u.Delete()`. You can use `bambou.Logger().SetLevel()` function to set the log level of Bambou.
 
 Again, run it and you'll see:
 
     $ go build && ./vspk-example
     User created! ID: 4b6b5c3f-304e-4f06-8dbc-811767b1be27
 
-Now let's see how to assign it to a group:
+Now let's see how to assign this user to a group:
 
 {% highlight go %}
     package main
@@ -282,7 +291,7 @@ Now let's see how to assign it to a group:
     }
 {% endhighlight %}
 
-Here we create a group, we update it with the `g.Update()` (so you can see this method), then we use the `g.AssignUsers()` to assign a list of Users. Finally we clean up everything.
+Here we create a group, we update it with the `g.Update()` method (just for fun), then we use the `g.AssignUsers()` to assign a list of Users. Finally we clean up everything.
 
 Run it and you'll see:
 
@@ -372,7 +381,7 @@ This covers the basic of the CRUD operations. The last thing I want to show you 
     }
 {% endhighlight %}
 
-So here, we create a PushCenter and we give it a handler function. Everytime a event occurs on the system, the PushCenter will call this handler method, passing it the notification. You can see that we've removed all the prints. We also add a little dirty `Sleep` at the end so we are sure we will receive all the events before the program terminates.
+So here, we create a PushCenter and we give it a handler function. Everytime an event occurs on the system, the PushCenter will call this handler by passing it the notification. You can see that we've removed all the prints. We also add a little dirty `Sleep` at the end of the code to be sure we will receive all the events before the program exits.
 
 Once more, run it and you'll see:
 
@@ -386,6 +395,15 @@ Once more, run it and you'll see:
 
 # Last words
 
-As you can see, it it really easy to use, and also very familliar if you have used the Python version of the `vspk`. Now with the power of Go, you can of course run all the calls in Go Routines and do a lot of concurent operations.
+As you can see, it is really easy to use. If you use the Python version of the `vspk` it should feel very familiar. Now with the power of Go, you can of course run all the functions in Go Routines and do a lot of concurent operations. If you want to learn Go a bit more, I suggest the follwing readings:
+
+* [The interactive tutorial](https://tour.golang.org)
+* [The official documentation](https://golang.org/doc/)
+* [Go by example](https://gobyexample.com)
+* [50 Shades of Go](http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/)
+
+You can also check the Go-Bambou documentation here:
+
+* [Bambou Documentation](https://godoc.org/github.com/nuagenetworks/go-bambou/bambou).
 
 I hope you'll enjoy this, and I wish you a very happy coding!
