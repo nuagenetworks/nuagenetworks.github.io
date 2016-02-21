@@ -301,97 +301,73 @@ Run it and you'll see:
     Group updated!
     User assigned! Group content: [<user:cca2d663-0c44-45f5-a291-78b82b54f9d3>]
 
-This covers the basic of the CRUD operations. The last thing I want to show you is how to use the `PushCenter`. Let's modify the code a bit so it looks like:
+This covers the basic of the CRUD operations. The last thing I want to show you is how to use the `PushCenter`. Create another little project at the same level than `vspk-example` package:
+
+    $ cd ../
+    $ mkdir vspk-push-example
+    $ touch vspk-push-example.go
+
+Then edit the `vspk-push-example.go` file so it looks like:
 
 {% highlight go %}
     package main
 
     import (
+    	"bufio"
+    	"encoding/json"
     	"fmt"
+    	"os"
+
     	"github.com/nuagenetworks/go-bambou/bambou"
     	"github.com/nuagenetworks/go-vspk/vspk"
-    	"time"
     )
 
     func main() {
 
-    	session, root := vspk.NewSession("csproot", "csproot", "csp",
-            "https://api.nuagenetworks.net:8443")
+    	session, _ := vspk.NewSession("csproot", "csproot",
+    		"csp", "https://api.nuagenetworks.net:8443")
 
     	session.Start()
 
+    	userEventHandler := func(e *bambou.Event) {
+
+    		// we unmarshal the data into a new user
+    		u := vspk.NewUser()
+    		json.Unmarshal(e.Data, u)
+
+    		fmt.Printf("[User   ] New Event! %s: %s\n",
+    			e.Type, u.FirstName)
+    	}
+
+    	groupEventHandler := func(e *bambou.Event) {
+
+    		// we unmarshal the data into a new group
+    		g := vspk.NewGroup()
+    		json.Unmarshal(e.Data, g)
+
+    		fmt.Printf("[Group  ] New Event! %s: %s\n",
+    			e.Type, g.Name)
+    	}
+
     	pushCenter := bambou.NewPushCenter()
+    	pushCenter.RegisterHandlerForIdentity(userEventHandler, vspk.UserIdentity)
+    	pushCenter.RegisterHandlerForIdentity(groupEventHandler, vspk.GroupIdentity)
+    	pushCenter.Start()
 
-    	pushCenter.StartWithHandler(func(n *bambou.Notification) {
-
-    		for _, e := range n.Events {
-                fmt.Printf("New Event! %s on %s: %s\n",
-                        e.Type, e.Entities[0]["ID"],
-                        e.EntityType)
-    		}
-    	})
-
-    	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
-    	enterprises, err := root.Enterprises(f)
-
-    	if err != nil {
-    		panic("error: " + err.Error())
-    	}
-
-    	e := enterprises[0]
-
-    	u := vspk.NewUser()
-    	u.FirstName = "Antoine"
-    	u.LastName = "Mercadal"
-    	u.UserName = "primalmotion"
-    	u.Email = "primalmotion@nuagenetworks.net"
-    	u.Password = "c8fed00eb2e87f1cee8e90ebbe870c190ac3848c"
-    	err = e.CreateUser(u)
-
-    	if err != nil {
-    		panic("error: " + err.Error())
-    	}
-
-    	g := vspk.NewGroup()
-    	g.Name = "Go Users"
-    	g.Description = "A group for people"
-    	e.CreateGroup(g)
-
-    	if err != nil {
-    		panic(err.Error())
-    	}
-
-    	g.Description = "A group for hipster people"
-    	g.Save()
-
-    	assignationList := vspk.UsersList{u}
-    	err = g.AssignUsers(assignationList)
-
-    	if err != nil {
-    		panic(err.Error())
-    	}
-
-    	u.Delete()
-    	g.Delete()
-
-        // gives a few seconds so we can see all the pushes
-    	time.Sleep(2 * time.Second)
+    	fmt.Println("Press any key to exit.")
+    	scanner := bufio.NewScanner(os.Stdin)
+    	scanner.Scan()
 
     	pushCenter.Stop()
     }
+
 {% endhighlight %}
 
-So here, we create a PushCenter and we give it a handler function. Every time an event occurs on the system, the PushCenter calls this handler by passing it the notification. We also add a dirty little `Sleep` at the end of the code to be sure we will receive all the events before the program exits. Notice that we've removed all the prints.
+Here we create two functions: `userEventHandler := func(e *bambou.Event)` and `groupEventHandler := func(e *bambou.Event)`. Then we create a `bambou.PushCenter` and we register these two function using `RegisterHandlerForIdentity()` by giving the handler, and an Identity. When a push regarding an object with the matching Identity is received, the corresponding handler is called. In the handler, we unmarshal the data to the corresponding kind of object, and we print some info. If you want to create a handler for any kind of push, you can pass the `bambou.AllIdentity` to the `RegisterHandlerForIdentity()` function.
 
-Once more, run it and you'll see:
+Build the `vspk-push-example` program and run it in another terminal. Then run the `vspk-example` program and you should see:
 
-    $ go build && ./vspk-example
-    New Event! CREATE on 06a274f5-7d05-4625-bffb-e47835fc0721: user
-    New Event! CREATE on 6d428c5b-f506-4af3-954f-28ec86163d32: group
-    New Event! UPDATE on 6d428c5b-f506-4af3-954f-28ec86163d32: group
-    New Event! UPDATE on 6d428c5b-f506-4af3-954f-28ec86163d32: group
-    New Event! DELETE on 06a274f5-7d05-4625-bffb-e47835fc0721: user
-    New Event! DELETE on 6d428c5b-f506-4af3-954f-28ec86163d32: group
+<figure><center><img width="80%" src="{{site_url}}/img/posts/go-bambou-push.gif" alt="vspk-push-example"></center></figure>
 
 # Going Further
 
