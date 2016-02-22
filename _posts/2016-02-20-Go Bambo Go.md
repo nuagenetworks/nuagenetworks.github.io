@@ -350,8 +350,10 @@ Then edit the `vspk-push-example.go` file so it looks like:
     	}
 
     	pushCenter := bambou.NewPushCenter()
-    	pushCenter.RegisterHandlerForIdentity(userEventHandler, vspk.UserIdentity)
-    	pushCenter.RegisterHandlerForIdentity(groupEventHandler, vspk.GroupIdentity)
+    	pushCenter.RegisterHandlerForIdentity(userEventHandler,
+                vspk.UserIdentity)
+    	pushCenter.RegisterHandlerForIdentity(groupEventHandler,
+                vspk.GroupIdentity)
     	pushCenter.Start()
 
     	fmt.Println("Press any key to exit.")
@@ -367,7 +369,7 @@ Here we create two functions: `userEventHandler := func(e *bambou.Event)` and `g
 
 Build the `vspk-push-example` program and run it in another terminal. Then run the `vspk-example` program and you should see:
 
-<figure><center><img width="80%" src="{{site_url}}/img/posts/go-bambou-push.gif" alt="vspk-push-example"></center></figure>
+<figure><center><img width="90%" src="{{site_url}}/img/posts/go-bambou-push.gif" alt="vspk-push-example"></center></figure>
 
 # Going Further
 
