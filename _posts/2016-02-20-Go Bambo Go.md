@@ -49,9 +49,9 @@ Finally, source that file:
 
 You can now generate the Go source code of the `vspk`:
 
-    (mono)$ generate-vspk -b master --language go
+    (mono)$ generate-vspk -b 3.2 --language go
     [log] retrieving specifications from github "nuagenetworks/vsd-api-specifications@master"
-    [log] 130 specifications retrieved from branch "master" (api version: 3.2)
+    [log] 130 specifications retrieved from branch "3.2" (api version: 3.2)
     [log] assembling all packages...
     [success] vspk generation complete and available in "./codegen/go"
 
@@ -105,21 +105,21 @@ First, create a new package:
 Let's write a basic program that can open a new VSD session:
 
 {% highlight go %}
-    package main
+package main
 
-    import (
-    	"fmt"
-    	"github.com/nuagenetworks/go-vspk/vspk"
-    )
+import (
+	"fmt"
+	"github.com/nuagenetworks/go-vspk/vspk"
+)
 
-    func main() {
+func main() {
 
-    	session, root := vspk.NewSession("csproot", "csproot", "csp",
-            "https://api.nuagenetworks.net:8443")
+	session, root := vspk.NewSession("csproot", "csproot", "csp",
+        "https://api.nuagenetworks.net:8443")
 
-    	session.Start()
-    	fmt.Println("APIKey:", root.APIKey)
-    }
+	session.Start()
+	fmt.Println("APIKey:", root.APIKey)
+}
 {% endhighlight %}
 
 This is a very simple program that starts a session on a VSD, and prints the API Key returned by the server. To build and run it, do:
@@ -130,31 +130,31 @@ This is a very simple program that starts a session on a VSD, and prints the API
 That was easy. Now let's retrieve the enterprise named `Triple A` (of course adapt the name to your own environment). Modify the code so it looks like:
 
 {% highlight go %}
-    package main
+package main
 
-    import (
-    	"fmt"
-    	"github.com/nuagenetworks/go-bambou/bambou"
-    	"github.com/nuagenetworks/go-vspk/vspk"
-    )
+import (
+	"fmt"
+	"github.com/nuagenetworks/go-bambou/bambou"
+	"github.com/nuagenetworks/go-vspk/vspk"
+)
 
-    func main() {
+func main() {
 
-    	session, root := vspk.NewSession("csproot", "csproot", "csp",
-            "https://api.nuagenetworks.net:8443")
+	session, root := vspk.NewSession("csproot", "csproot", "csp",
+        "https://api.nuagenetworks.net:8443")
 
-    	session.Start()
+	session.Start()
 
-    	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
-    	enterprises, err := root.Enterprises(f)
+	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
+	enterprises, err := root.Enterprises(f)
 
-    	if err != nil {
-    		panic("error: " + err.Error())
-    	}
+	if err != nil {
+		panic("error: " + err.Error())
+	}
 
-    	fmt.Printf("%d enterprise! ID: %s\n",
-            f.TotalCount, enterprises[0].ID)
-    }
+	fmt.Printf("%d enterprise! ID: %s\n",
+        f.TotalCount, enterprises[0].ID)
+}
 {% endhighlight %}
 
 As you can seem we use a filter. Filter and other information like pagination are given through the `bambou.FetchingInfo` structure. It will be used by Bambou to forge the request, and will be populated back when the request is complete with additional information, so you can see the total number of entities and other things like that. You'll also notice that `root.Enterprises()` returns an `*Error` in addition to the list. If this error is not nil, then something wrong happened.
@@ -167,49 +167,49 @@ Run it and you'll see:
 Now, let's create a User in that enterprise:
 
 {% highlight go %}
-    package main
+package main
 
-    import (
-    	"fmt"
-    	"github.com/nuagenetworks/go-bambou/bambou"
-    	"github.com/nuagenetworks/go-vspk/vspk"
-    )
+import (
+	"fmt"
+	"github.com/nuagenetworks/go-bambou/bambou"
+	"github.com/nuagenetworks/go-vspk/vspk"
+)
 
-    func main() {
+func main() {
 
-        // uncomment for debug logging
-        // bambou.Logger().SetLevel(0)
+    // uncomment for debug logging
+    // bambou.Logger().SetLevel(0)
 
-    	session, root := vspk.NewSession("csproot", "csproot", "csp",
-            "https://api.nuagenetworks.net:8443")
+	session, root := vspk.NewSession("csproot", "csproot", "csp",
+        "https://api.nuagenetworks.net:8443")
 
-    	session.Start()
+	session.Start()
 
-    	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
-    	enterprises, err := root.Enterprises(f)
+	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
+	enterprises, err := root.Enterprises(f)
 
-    	if err != nil {
-    		panic("error: " + err.Error())
-    	}
+	if err != nil {
+		panic("error: " + err.Error())
+	}
 
-    	e := enterprises[0]
+	e := enterprises[0]
 
-    	u := vspk.NewUser()
-    	u.FirstName = "Antoine"
-    	u.LastName = "Mercadal"
-    	u.UserName = "primalmotion"
-    	u.Email = "primalmotion@nuagenetworks.net"
-    	u.Password = "c8fed00eb2e87f1cee8e90ebbe870c190ac3848c"
-    	err = e.CreateUser(u)
+	u := vspk.NewUser()
+	u.FirstName = "Antoine"
+	u.LastName = "Mercadal"
+	u.UserName = "primalmotion"
+	u.Email = "primalmotion@nuagenetworks.net"
+	u.Password = "c8fed00eb2e87f1cee8e90ebbe870c190ac3848c"
+	err = e.CreateUser(u)
 
-    	if err != nil {
-    		panic("error: " + err.Error())
-    	}
+	if err != nil {
+		panic("error: " + err.Error())
+	}
 
-    	fmt.Println("User created! ID:", e.ID)
+	fmt.Println("User created! ID:", e.ID)
 
-    	u.Delete()
-    }
+	u.Delete()
+}
 {% endhighlight %}
 
 This is again very straightforward. We create a new `vspk.User` using `vspk.NewUser()`, we set some attributes and we create it under the enterprise using `e.CreateUser()`. The user is created, its `ID` is printed, then we delete it, so we can run the program again without having any conflict, using `u.Delete()`. You can use `bambou.Logger().SetLevel()` function to set the log level of Bambou.
@@ -222,73 +222,73 @@ Again, run it and you'll see:
 Now let's see how to assign this user to a group:
 
 {% highlight go %}
-    package main
+package main
 
-    import (
-    	"fmt"
-    	"github.com/nuagenetworks/go-bambou/bambou"
-    	"github.com/nuagenetworks/go-vspk/vspk"
-    )
+import (
+	"fmt"
+	"github.com/nuagenetworks/go-bambou/bambou"
+	"github.com/nuagenetworks/go-vspk/vspk"
+)
 
-    func main() {
+func main() {
 
-    	session, root := vspk.NewSession("csproot", "csproot", "csp",
-            "https://api.nuagenetworks.net:8443")
+	session, root := vspk.NewSession("csproot", "csproot", "csp",
+        "https://api.nuagenetworks.net:8443")
 
-    	session.Start()
+	session.Start()
 
-    	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
-    	enterprises, err := root.Enterprises(f)
+	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
+	enterprises, err := root.Enterprises(f)
 
-    	if err != nil {
-    		panic("error: " + err.Error())
-    	}
+	if err != nil {
+		panic("error: " + err.Error())
+	}
 
-    	e := enterprises[0]
+	e := enterprises[0]
 
-    	u := vspk.NewUser()
-    	u.FirstName = "Antoine"
-    	u.LastName = "Mercadal"
-    	u.UserName = "primalmotion"
-    	u.Email = "primalmotion@nuagenetworks.net"
-    	u.Password = "c8fed00eb2e87f1cee8e90ebbe870c190ac3848c"
-    	err = e.CreateUser(u)
+	u := vspk.NewUser()
+	u.FirstName = "Antoine"
+	u.LastName = "Mercadal"
+	u.UserName = "primalmotion"
+	u.Email = "primalmotion@nuagenetworks.net"
+	u.Password = "c8fed00eb2e87f1cee8e90ebbe870c190ac3848c"
+	err = e.CreateUser(u)
 
-    	if err != nil {
-    		panic("error: " + err.Error())
-    	}
+	if err != nil {
+		panic("error: " + err.Error())
+	}
 
-    	fmt.Println("User created! ID:", e.ID)
+	fmt.Println("User created! ID:", e.ID)
 
-    	g := vspk.NewGroup()
-    	g.Name = "Go Users"
-    	g.Description = "A group for people"
-    	e.CreateGroup(g)
+	g := vspk.NewGroup()
+	g.Name = "Go Users"
+	g.Description = "A group for people"
+	e.CreateGroup(g)
 
-    	if err != nil {
-    		panic(err.Error())
-    	}
+	if err != nil {
+		panic(err.Error())
+	}
 
-    	fmt.Println("Group created! ID:", u.ID)
+	fmt.Println("Group created! ID:", u.ID)
 
-    	g.Description = "A group for hipster people"
-    	g.Save()
+	g.Description = "A group for hipster people"
+	g.Save()
 
-    	fmt.Println("Group updated!")
+	fmt.Println("Group updated!")
 
-    	assignationList := vspk.UsersList{u}
-    	err = g.AssignUsers(assignationList)
+	assignationList := vspk.UsersList{u}
+	err = g.AssignUsers(assignationList)
 
-    	if err != nil {
-    		panic(err.Error())
-    	}
+	if err != nil {
+		panic(err.Error())
+	}
 
-    	contents, _ := g.Users(nil)
-    	fmt.Printf("User assigned! Group content: %s\n", contents)
+	contents, _ := g.Users(nil)
+	fmt.Printf("User assigned! Group content: %s\n", contents)
 
-    	u.Delete()
-    	g.Delete()
-    }
+	u.Delete()
+	g.Delete()
+}
 {% endhighlight %}
 
 Here we create a group, we update it with the `g.Update()` method (just for fun), then we use the `g.AssignUsers()` to assign a list of Users. Finally we clean up everything.
@@ -305,64 +305,64 @@ This covers the basic of the CRUD operations. The last thing I want to show you 
 
     $ cd ../
     $ mkdir vspk-push-example
+    $ cd vspk-push-example
     $ touch vspk-push-example.go
 
 Then edit the `vspk-push-example.go` file so it looks like:
 
 {% highlight go %}
-    package main
+package main
 
-    import (
-    	"bufio"
-    	"encoding/json"
-    	"fmt"
-    	"os"
+import (
+	"bufio"
+	"encoding/json"
+	"fmt"
+	"os"
 
-    	"github.com/nuagenetworks/go-bambou/bambou"
-    	"github.com/nuagenetworks/go-vspk/vspk"
-    )
+	"github.com/nuagenetworks/go-bambou/bambou"
+	"github.com/nuagenetworks/go-vspk/vspk"
+)
 
-    func main() {
+func main() {
 
-    	session, _ := vspk.NewSession("csproot", "csproot",
-    		"csp", "https://api.nuagenetworks.net:8443")
+	session, _ := vspk.NewSession("csproot", "csproot",
+		"csp", "https://api.nuagenetworks.net:8443")
 
-    	session.Start()
+	session.Start()
 
-    	userEventHandler := func(e *bambou.Event) {
+	userEventHandler := func(e *bambou.Event) {
 
-    		// we unmarshal the data into a new user
-    		u := vspk.NewUser()
-    		json.Unmarshal(e.Data, u)
+		// we unmarshal the data into a new user
+		u := vspk.NewUser()
+		json.Unmarshal(e.Data, u)
 
-    		fmt.Printf("[User   ] New Event! %s: %s\n",
-    			e.Type, u.FirstName)
-    	}
+		fmt.Printf("[User   ] New Event! %s: %s\n",
+			e.Type, u.FirstName)
+	}
 
-    	groupEventHandler := func(e *bambou.Event) {
+	groupEventHandler := func(e *bambou.Event) {
 
-    		// we unmarshal the data into a new group
-    		g := vspk.NewGroup()
-    		json.Unmarshal(e.Data, g)
+		// we unmarshal the data into a new group
+		g := vspk.NewGroup()
+		json.Unmarshal(e.Data, g)
 
-    		fmt.Printf("[Group  ] New Event! %s: %s\n",
-    			e.Type, g.Name)
-    	}
+		fmt.Printf("[Group  ] New Event! %s: %s\n",
+			e.Type, g.Name)
+	}
 
-    	pushCenter := bambou.NewPushCenter()
-    	pushCenter.RegisterHandlerForIdentity(userEventHandler,
-                vspk.UserIdentity)
-    	pushCenter.RegisterHandlerForIdentity(groupEventHandler,
-                vspk.GroupIdentity)
-    	pushCenter.Start()
+	pushCenter := bambou.NewPushCenter()
+	pushCenter.RegisterHandlerForIdentity(userEventHandler,
+            vspk.UserIdentity)
+	pushCenter.RegisterHandlerForIdentity(groupEventHandler,
+            vspk.GroupIdentity)
+	pushCenter.Start()
 
-    	fmt.Println("Press any key to exit.")
-    	scanner := bufio.NewScanner(os.Stdin)
-    	scanner.Scan()
+	fmt.Println("Press any key to exit.")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
 
-    	pushCenter.Stop()
-    }
-
+	pushCenter.Stop()
+}
 {% endhighlight %}
 
 Here we create two functions: `userEventHandler := func(e *bambou.Event)` and `groupEventHandler := func(e *bambou.Event)`. Then we create a `bambou.PushCenter` and we register these two function using `RegisterHandlerForIdentity()` by giving the handler, and an Identity. When a push regarding an object with the matching Identity is received, the corresponding handler is called. In the handler, we unmarshal the data to the corresponding kind of object, and we print some info. If you want to create a handler for any kind of push, you can pass the `bambou.AllIdentity` to the `RegisterHandlerForIdentity()` function.
