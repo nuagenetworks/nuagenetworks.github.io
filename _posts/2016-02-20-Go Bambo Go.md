@@ -146,7 +146,6 @@ func main() {
 
 	session.SetInsecureSkipVerify(true)
 	session.Start()
-	
 	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
 	enterprises, err := root.Enterprises(f)
 
