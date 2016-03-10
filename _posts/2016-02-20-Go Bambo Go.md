@@ -116,7 +116,8 @@ func main() {
 
 	session, root := vspk.NewSession("csproot", "csproot", "csp",
         "https://api.nuagenetworks.net:8443")
-
+        
+        session.SetInsecureSkipVerify(true)
 	session.Start()
 	fmt.Println("APIKey:", root.APIKey)
 }
@@ -143,8 +144,9 @@ func main() {
 	session, root := vspk.NewSession("csproot", "csproot", "csp",
         "https://api.nuagenetworks.net:8443")
 
+	session.SetInsecureSkipVerify(true)
 	session.Start()
-
+	
 	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
 	enterprises, err := root.Enterprises(f)
 
@@ -183,6 +185,7 @@ func main() {
 	session, root := vspk.NewSession("csproot", "csproot", "csp",
         "https://api.nuagenetworks.net:8443")
 
+	session.SetInsecureSkipVerify(true)
 	session.Start()
 
 	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
@@ -234,7 +237,8 @@ func main() {
 
 	session, root := vspk.NewSession("csproot", "csproot", "csp",
         "https://api.nuagenetworks.net:8443")
-
+	
+	session.SetInsecureSkipVerify(true)
 	session.Start()
 
 	f := &bambou.FetchingInfo{Filter: "name == \"Triple A\""}
@@ -327,7 +331,8 @@ func main() {
 
 	session, _ := vspk.NewSession("csproot", "csproot",
 		"csp", "https://api.nuagenetworks.net:8443")
-
+		
+	session.SetInsecureSkipVerify(true)
 	session.Start()
 
 	userEventHandler := func(e *bambou.Event) {
