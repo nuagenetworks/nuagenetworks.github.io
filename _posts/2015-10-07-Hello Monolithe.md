@@ -9,7 +9,7 @@ Monolithe is a Python library that generates SDKs, CLIs, and their documentation
 
 Today, we are very excited to announce the release of [Monolithe on GitHub](https://github.com/nuagenetworks/monolithe)!
 
-<figure><center><img width="40%" src="{{site_url}}/img/posts/monolithe-logo.png" alt="logo"></center></figure>
+<figure><center><img width="40%" src="{{site.baseurl}}/img/posts/monolithe-logo.png" alt="logo"></center></figure>
 
 ## Background Story
 
@@ -65,6 +65,6 @@ Of course, there's a lot of additional options. Just take a look at the `--help`
 
 Now you have Specifications and a SDK, wouldn’t it be nice to have a little bit more?
 
-<figure><center><img width="30%" src="{{site_url}}/img/posts/we-have-a-plan.png" alt="image"></center></figure>
+<figure><center><img width="30%" src="{{ site.baseurl }}/img/posts/we-have-a-plan.png" alt="image"></center></figure>
 
 Stay tuned, because Monolithe is really just the beginning ;)

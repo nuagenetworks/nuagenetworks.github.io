@@ -22,7 +22,7 @@ main_page: 1
     </header>
     <div class="excerpt">
       {{ post.excerpt }}
-      <a href="{{post.url}}">Read more...</a>
+      <a href="{{ post.url | prepend: site.baseurl }}">Read more...</a>
     </div>
   </div>
   {% endfor %}
