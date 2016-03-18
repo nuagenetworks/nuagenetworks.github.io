@@ -2,7 +2,7 @@
 layout: post
 title: Routing-to-Underlay for FIP and SNAT 
 author: Jonas Vermeulen
-callout_image: header-post.jpg
+callout_image: nuage-community-header.jpg
 tags: OpenStack, FIP, SNAT, 
 ---
 
@@ -13,8 +13,8 @@ Since VSP 3.2, we started to add more flexibility on how to provide external acc
 
 A first application is in OpenStack environments: quite often virtual machines do not use plain routing to reach external networks, but administrators use mechanisms known as Floating IP and SNAT:
 
- - Floating IP is a 1:1 NAT mechanism. It is the default way of working in AWS VPCs and meant for server-based / public-facing workloads. The virtual machine is still installed with a private IP and uses its private IP for internal connectivity. However for any connection from/to an external network, the public IP will be used. 
- - SNAT on the other hand is a N:1 mechanism meant for virtual machines that only    need to initiate outgoing connections, eg to retrieve a yum update.
+- Floating IP is a 1:1 NAT mechanism. It is the default way of working in AWS VPCs and meant for server-based / public-facing workloads. The virtual machine is still installed with a private IP and uses its private IP for internal connectivity. However for any connection from/to an external network, the public IP will be used. 
+- SNAT on the other hand is a N:1 mechanism meant for virtual machines that only    need to initiate outgoing connections, eg to retrieve a yum update.
    For those connections, a shared public IP will be used.
 
 When using Nuage VSP, these NAT mechanisms are implemented on the VRS, and you can configure the system so that the VRS sends out the packet directly to the underlay network without VXLAN encapsulation.
@@ -78,7 +78,7 @@ The SNAT mechanism will source the traffic that is configured on the uplink inte
 The FloatingIP mechanism links a public IP 1:1 with a virtual machine. Since this virtual machine is placed by the orchestration system, either
 
 - The orchestration system has to limit the placement of the virtual machine, so that the FIP-subnet is confined to a specific rack and the TOR can announce this subnet to the rest of the network. In OpenStack, this can be achieved using host aggregates; or
-- The fabric has to support a flat L2 design. In a hierarchical datacenter network, this might be trivial, but in a typical L3 leaf-spine fabric this is not always possible. We are working on a solution to dynamically advertise the location of the Floating IP to the fabric. We will keep you up to date on this !
+- The fabric has to support a flat L2 design across its hypervisors. For people that run a L3 fabric, please be a little patiet, we are working on a solution to dynamically advertise the location of the Floating IP.
  
 ## Configure the Nuage Neutron plugin
 Within the Nuage Neutron plugin configuration file (`nuage_plugin.ini`)  you could configure default behavior for Floating IP Subnets and for enabling SNAT on a per-router basis:
@@ -134,9 +134,9 @@ This means that the underlying infrastructure must have been properly provisione
 
 - Coexistence with default route  
 
-In today’s implementation, the FIP/SNAT action is only taken when there is no matching prefix found in the routing table for the domain. This means it effectively acts as an implicit default or last-resort route. In case your domain design relies on a default route, then FIP/SNAT action will never be taken.
+Today’s implementation is fully inline with the routing behaviour in OpenStack. This means that FIP/SNAT action is only taken when there is no matching prefix found in the routing table for the domain. In case you have provisioned a default route in the domain, it will take priority and FIP/SNAT action will never be taken.
 
-As part of R4, we are adding support to add a specific route on when to perform "routing-to-underlay". This allows administrators to rely on underlay-forwarding for very specific prefixes. This enables very interesting use cases to access specific shared resources in a private cloud over SNAT, for example: directly access package repositories or object storage.
+Again, we are adding support so you can use both: you are then able to add a specific route to a domain on when to perform "routing-to-underlay". This allows administrators to develop very interesting use cases to access specific shared resources, for example: directly access package repositories or object storage without having to go via a gateway.
 
 # What's next ?
 By now you have seen how to setup routing-to-underlay for FIP/SNAT mechanisms. Most of the work is one-off as part of setting up your infrastructure. After that, it becomes quite easy to selectively enable it for the domains/subnets you like. When you are not sure about the final use cases for your cloud, you may want to prepare the infrastructure anyway, you never know when it becomes required !
