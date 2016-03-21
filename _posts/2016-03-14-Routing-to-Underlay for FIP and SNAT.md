@@ -3,9 +3,11 @@ layout: post
 title: Routing-to-Underlay for FIP and SNAT 
 author: Jonas Vermeulen
 callout_image: nuage-community-header.jpg
-tags: OpenStack, FIP, SNAT, 
+tags: OpenStack, FIP, SNAT 
+excerpt: This blog will describe how Nuage VSP implements connectivity to external networks via Floating IP and SNAT by punting traffic directly on the underlay on the VRS.
 ---
 
+# Introduction
 After a couple of weeks focusing on integration aspects, let us go back to a pure networking feature: Routing-to-Underlay for FIP and SNAT.
 
 From its inception, Nuage Networks VSP provided external connectivity by having gateways terminate the VXLAN tunnel, which in turn can expose the services to the external world. Reachability of external networks was typically programmed through static routes or would be advertised through MP-BGP.  
