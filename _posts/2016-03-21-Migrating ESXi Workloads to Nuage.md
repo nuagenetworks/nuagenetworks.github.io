@@ -30,8 +30,8 @@ The procedure we came up with consists of following steps:
   * Design Network Topology in Nuage VSP
   * In case the routing point can be moved (Scenario 1), migrate Gateway IP(s)
 2. In-Place VM Migration
-  * Pre-provision Metadata
-  * Deploy VRS-VM
+  * Deploy VRS-VM 
+  * Pre-provision Nuage Metadata 
   * VM Portgroup Update
 
 What you can see from these steps, is that the actual stitching of the VM into a Nuage L2/L3 subnet relies on updating the PortGroup. It does not require a separate cluster or separate set of hypervisors: it is an in-place process that does not even involve vMotion.
@@ -89,20 +89,38 @@ After this step, the traffic flow will have changed and will be as follows:
 
 Note that dynamic routing can be supported when using a 7750 (V)SR or when using GRT domain leaking on VSG.
 
-# In-Place VM Migration 
+# Step 2: In-Place VM Migration 
 After having prepared the network, the operator can start the actual VM migration process. 
 The process is an in-place  migration. This effectively means that VMs do not have to be migrated to a different host, but just require the remapping to a different portgroup in ESXi
 
 The process consists of
 
-1. Pre-provision Metadata to map a VM into the right subnet
-2. Deploying VRS-VM on the hypervisor that hosts the VM that require migration to Nuage
+1. Deploying VRS-VM on the hypervisor that hosts the VM that require migration to Nuage
+2. Pre-provision Metadata to map a VM into the right subnet
 3. Update Port Group for each VNic so that Nuage can map the VNic to a Nuage VPort and can enforce a policy
 
-Note that steps 1 and 2 can be interchanged.
+Steps 2 and 3 are described in full length here, but can easily be automated. Keep reading to find back the link...
+
+## Deploy VRS-VM
+The VRS-VM needs to be deployed on all hypervisors that host VMs that need migration. 
+Prior to deploying the VRS-VM a new dvSwitch needs to be provisioned in which all the VNICs of the VMs will be mapped. This is a Distributed vSwitch without uplink, and should have following PortGroups:
+
+ - Nuage OVSPG –Portgroup where the Nuage VRS-VM Access interface is mapped into as a trunk port. 
+ - VM PortGroup: Portgroup where all regular VMs will be attached into. 
+
+A sample diagram is shown below, for a deployment across 3 hypervisors (3 xVRS), and a few VMs.
+
+ ![Portgroup configuration in ESXi][ESXIScreenshot1]
+ 
+The deployment of VRS-VM can be done manually or through VCIN. Deploying a VRS-VM does not impact any traffic, nor does it map VMs into Nuage after this. It just prepares the hypervisor for managing VMs via Nuage. The screenshot below gives a view on the VRS-VMs as managed through VCIN.
+
+As part of deploying VRS-VM, the access interface will be mapped into the OVSPG of the new dvSwitch 
+
 
 ## Pre-Provision Nuage metadata
-For each VM that you like to have managed through Nuage, the relevant metadata has to be provisioned. For bottom-up activation, this involves setting Advanced Configuration Parameters. This can be done via the vSphere Web/Desktop Client when the VM is powered down, or can be done through API or PowerCLI when the VM is powered up.
+For each VM that you like to have managed through Nuage, the relevant hooks have to be provisioned to link the VM to a Nuage subnet. 
+
+For bottom-up activation, this involves setting Advanced Configuration Parameters. This can be done via the vSphere Web/Desktop Client when the VM is powered down, or can be done through API or PowerCLI when the VM is powered up.
  
  ![Setting VM Advanced Settings using PowerCLI][ESXIScreenshot1]
 
@@ -118,24 +136,8 @@ The full list of Advanced Settings are the following:
 | nuage.nic<i>#</i>.networktype|	nuage.nic<i>#</i>.networktype	|To specify a IPv4/IPv6|
 | nuage.nic<i>#</i>.ip	|nuage.nic<i>#</i>.ip	|To request a static IP address. Requested IP must be within the range of the specified subnet, and available.|
  
- 
+For split-activation, this involves pre-creating the VPort and Virtual Machine objects in Nuage VSD.
 
-An approach via vSphere API is anyway recommended since it is expected to have the whole migration automation.
-
-## Deploy VRS-VM
-The VRS-VM needs to be deployed on all hypervisors that host VMs that need migration. 
-Prior to deploying the VRS-VM a new dvSwitch needs to be provisioned in which all the VNICs of the VMs will be mapped. This is a Distributed vSwitch without uplink, and should have following PortGroups:
-
- - Nuage OVSPG –Portgroup where the Nuage VRS-VM Access interface is mapped into as a trunk port. 
- - VM PortGroup: Portgroup where all regular VMs will be attached into. 
-
-A sample diagram is shown below, for a deployment across 3 hypervisors (3 xVRS), and a few VMs.
-
- ![Portgroup configuration in ESXi][ESXIScreenshot1]
- 
-The deployment of VRS-VM can be done manually or through VCIN. Deploying a VRS-VM does not impact any traffic, nor does it map VMs into Nuage after this. It just prepares the hypervisor for managing VMs via Nuage. The screenshot below gives a view on the VRS-VMs as managed through VCIN.
-
-As part of deploying VRS-VM, the data interfaces will be mapped into an OVSPG of a new dvSwitch 
 
 ## Update PortGroup
 The final step in the migration is to update the PortGroup of the VNICs of the Virtual Machine to the VM PortGroup of the Nuage dvSwitch:
@@ -144,6 +146,10 @@ The final step in the migration is to update the PortGroup of the VNICs of the V
 
 Once the update is done, VRS-VM will capture the event, request the network policy from VSD and wire the VM into the subnet or L2 domain that was provisioned inside the metadata. 
 The VM can then ping the gateway IP, is able to ping the other VMs that are not migrated yet and will be able to ping the other BMs of the same subnet.
+
+
+As mentioned before, the steps to migrate the VM can be fully automated: [A migration script is available][migrationscript] that includes metadata provisioning and Portgroup update all for you!
+
 
 ## Ping Test
 
@@ -171,12 +177,12 @@ In the second scenario, the gateway IP has not been migrated, so any inter-subne
 In conclusion of this blog, I just like to re-iterate how smoothly the migration can actually take place in a ESXi environment:
 
 - No change need to be made on the VM itself. VMs can keep running and connections will stay up during migration
-- It is up to the operator to go for distributed routing in Nuage, or keep the routing infrastructure intact
+- A VXLAN gateway is used to interconnect Nuage-backed subnets and legacy subnets. Depending on bandwidth/flexibility needs, Nuage Networks can work with different models in hardware (Eg 7850 VSG/ Nokia 7750 SR) or software (Eg VRSG)
+- With Nuage, the operator can choose to leverage the distributed routing implementation of the Nuage platform, or to keep the routing infrastructure intact
+ 
+And lastly, a lot of the repetitive migration work can easily be automated - see this [migration script][migrationscript] to help you out.
 
-A VXLAN gateway is used to interconnect Nuage-backed subnets and legacy subnets. Depending on bandwidth/flexibility needs, Nuage Networks can work with different models in hardware (Eg 7850 VSG/ Nokia 7750 SR) or software (Eg VRSG)
-
-
-Cheers and enjoy the Easter break !
+Cheers, and enjoy the Easter break !
 
 
 [Slide1]: {{ site.baseurl}}/img/posts/migration-esxi-workloads/Slide1.PNG
@@ -193,7 +199,7 @@ Cheers and enjoy the Easter break !
 [NuageExtract3]: {{ site.baseurl}}/img/posts/migration-esxi-workloads/NuageExtract3.png
 [NuageExtract4]: {{ site.baseurl}}/img/posts/migration-esxi-workloads/NuageExtract4.png
 [PingScreenshot]: {{ site.baseurl}}/img/posts/migration-esxi-workloads/PingScreenshot.png
-
+[migrationscript]: https://github.com/pdellaert/vspk-examples/blob/extra-scripts/migrate_vmware_vm_to_nuage.py
 
 
 
