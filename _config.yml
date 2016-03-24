@@ -55,7 +55,10 @@ paginate_path: "page:num"
 
 # BUILD SETTINGS
 markdown: kramdown
-highlighter: pygments
+highlighter: rouge
 sass:
   sass_dir: _sass
   style: :compressed
+
+gems: [jekyll-paginate] 
+

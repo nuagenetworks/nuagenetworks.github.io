@@ -373,7 +373,7 @@ Here we create two functions: `userEventHandler := func(e *bambou.Event)` and `g
 
 Build the `vspk-push-example` program and run it in another terminal. Then run the `vspk-example` program and you should see:
 
-<figure><center><img width="90%" src="{{site_url}}/img/posts/go-bambou-push.gif" alt="vspk-push-example"></center></figure>
+<figure><center><img width="90%" src="{{site.baseurl}}/img/posts/go-bambou-push.gif" alt="vspk-push-example"></center></figure>
 
 # Going Further
 

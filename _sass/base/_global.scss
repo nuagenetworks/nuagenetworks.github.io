@@ -146,6 +146,10 @@ p, ol, ul, dl, .math-display {
 ol, ul {
   list-style-position: inside;
 }
+li {
+  margin-left: 1.5em;
+}
+
 hr {
   border: 0;
   border-top: 1px solid $border-color;
