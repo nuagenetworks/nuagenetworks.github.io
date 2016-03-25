@@ -4,7 +4,7 @@ title: Migrating ESXi Workloads to Nuage
 author: Jonas Vermeulen
 callout_image: nuage-community-header.jpg
 tags: ESXi, VTEP, Migration, VSG, 7850, VRSG
-excerpt: Nuage Networks VSP can both be used in greenfield and brownfield situations. In this blog, we will demonstrate how you, as an operator, can migrate the networks of your existing VMware ESXi datacenter into overlay networks from Nuage Networks with minimal impact.
+excerpt: Nuage Networks VSP can both be deployed in greenfield and brownfield situations. In this blog, we will demonstrate how you, as an operator, can migrate the networks of your existing VMware ESXi datacenter into overlay networks from Nuage Networks with minimal impact. A script is also provided to facilitate such migration.
 
 ---
 
@@ -54,7 +54,7 @@ The VXLAN gateway is a VTEP extending subnets between existing and Nuage-Backed 
 
 An alternative to sending back the Transit Uplink traffic over the same link is to have a separate link from the VXLAN GW into the Global DC Network. This is often done when migrating a L3 leaf-spine fabric or when interconnecting to other sites. 
 
-##Designing Network Topology in VSP
+## Designing Network Topology in VSP
 After preparing the physical network, the operator needs to define the network topology in VSP.
 All networks can already be provisioned in there as a placeholder for later migration. 
 
@@ -148,8 +148,7 @@ Once the update is done, VRS-VM will capture the event, request the network poli
 The VM can then ping the gateway IP, is able to ping the other VMs that are not migrated yet and will be able to ping the other BMs of the same subnet.
 
 
-As mentioned before, the steps to migrate the VM can be fully automated: [A migration script is available][migrationscript] that includes metadata provisioning and Portgroup update all for you!
-
+As mentioned before, the steps to migrate the VM can be fully automated: [A migration script is available][migrationscript] that includes metadata provisioning and that updates the ESXi Portgroup all for you! 
 
 ## Ping Test
 
@@ -157,7 +156,7 @@ As an example, we will show the result of a ping test between the VM and the Gat
  
  ![Ping during migration][PingScreenshot]
  
-As can be seen in the result, there is are 2 packets lost during the migration, so effectively resulting in approx 2s of network loss.
+As can be seen in the result, there are 2 packets lost during the migration, so effectively resulting in approx 2s of network loss.
 
 ## Network VPort Bridge Removal
 For subnets that have their VMs fully migrated, it is recommended to remove the VPort Bridge from the subnet. In the example, this is to remove VPort Bridge from `10.10.1.0/24` subnet.
@@ -180,9 +179,11 @@ In conclusion of this blog, I just like to re-iterate how smoothly the migration
 - A VXLAN gateway is used to interconnect Nuage-backed subnets and legacy subnets. Depending on bandwidth/flexibility needs, Nuage Networks can work with different models in hardware (Eg 7850 VSG/ Nokia 7750 SR) or software (Eg VRSG)
 - With Nuage, the operator can choose to leverage the distributed routing implementation of the Nuage platform, or to keep the routing infrastructure intact
  
-And lastly, a lot of the repetitive migration work can easily be automated - see this [migration script][migrationscript] to help you out.
+A lot of the repetitive migration work can easily be automated. Many thanks go to Philippe Dellaert for developing this [migration script][migrationscript] and reviewing this blog.
 
-Cheers, and enjoy the Easter break !
+
+
+Enjoy the Easter break !
 
 
 [Slide1]: {{ site.baseurl}}/img/posts/migration-esxi-workloads/Slide1.PNG
@@ -199,7 +200,7 @@ Cheers, and enjoy the Easter break !
 [NuageExtract3]: {{ site.baseurl}}/img/posts/migration-esxi-workloads/NuageExtract3.png
 [NuageExtract4]: {{ site.baseurl}}/img/posts/migration-esxi-workloads/NuageExtract4.png
 [PingScreenshot]: {{ site.baseurl}}/img/posts/migration-esxi-workloads/PingScreenshot.png
-[migrationscript]: https://github.com/pdellaert/vspk-examples/blob/extra-scripts/migrate_vmware_vm_to_nuage.py
+[migrationscript]: https://github.com/nuagenetworks/vspk-examples/blob/master/migrate_vmware_vm_to_nuage.py 
 
 
 
