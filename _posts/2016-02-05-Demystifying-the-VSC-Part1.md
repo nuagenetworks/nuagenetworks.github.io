@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Demystifying the VSC - Part 1/3: The "Basics"
+title: Demystifying the VSC - Part 1/3 The "Basics"
 author: Jonas Vermeulen
 callout_image: nuage-community-header.jpg
 tags: VSC, 7x50, SROS, Controller, OpenFlow, XMPP, BGP
@@ -50,42 +50,39 @@ Two sections I will further comment on are the BGP part and the vSwitch Controll
 ## BGP configuration
 Multi-Protocol Border Gateway Protocol (MP-BGP) is used for distribution of MAC/IP reachability information for virtual machines between VSGs and VSCs. Such information is used to program forwarding information on each VRS. 
 
-The configuration for BGP has to be applied on the VSC/VSG/DCGW itself. For smaller deployment this is in mesh (each VSC peers with each other), for bigger deployment we recommend deploying a route-reflector (typical: >8). An example is shown below:
+The configuration for BGP has to be applied on the VSC/VSG/DCGW itself. For smaller deployment this is in mesh (each VSC peers with each other), for bigger deployment we recommend deploying a route-reflector (typical: &gt; 8). An example is shown below:
 
-|---|---|
-| 
+![BGP Federation across 4 VSC's in 2 Sites][Slide3]
 
-![BGP Federation across 4 VSC's in 2 Sites][Slide 3]
 
-| Configuration on 172.16.1.1
+The configuration on VSC `172.16.1.1` would look as follows:
 
     bgp
-       rapid-update
-       rapid-withdrawal
-       min-route-advertisement 1
-       outbound-route-filtering
-         extended-community
-        send-orf
-          exit
-       exit
-       group "local site"
-         family evpn
-         type internal
-         neighbour 172.16.1.2
-         exit
-       exit
-       group “remote site”
-         family evpn
-         type external
-         multihop 64
-         peer-as 65001
-         neighbour 172.16.2.1
-         exit
-         neighbour 172.16.2.1
-         exit
-       exit
-    exit
-|---|---|
+        rapid-update
+        rapid-withdrawal
+        min-route-advertisement 1
+        outbound-route-filtering
+            extended-community
+               send-orf
+            exit
+        exit
+        group "local site"
+            family evpn
+            type internal
+            neighbour 172.16.1.2
+                exit
+        exit
+        group "remote site"
+            family evpn
+            type external
+            multihop 64
+            peer-as 65001
+            neighbour 172.16.2.1
+                exit
+            neighbour 172.16.2.1
+                exit
+        exit
+    exit 
 
 At the start of such a BGP configuration you typically find some timer optimizations: these timer tweaks are used to improve the regular BGP convergence (standard hold-time is 90s) using following SROS features:
 
