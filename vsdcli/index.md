@@ -6,7 +6,14 @@ callout_image: header-post.jpg
 
 # Installation
 
+<div class="deprecated">
+[DEPRECATED]<br /> The <strong>Installation</strong> section is no longer valid for VSD 4.0.
+Starting VSD 4.0, CLI is directly installed when you `pip install vspk` package from pypi. <br />
+Please, see <strong>Usage</strong> section to learn how to use the CLI.
+</div>
+
 1) CLI is available on Pypi. Simply install it in your environment using `pip`
+
 
     (vsd-env) $ pip install vsdcli
 
