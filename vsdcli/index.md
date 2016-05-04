@@ -1,6 +1,7 @@
 ---
-layout: default_with_header
+layout: page
 title: Command Line Interface
+callout_image: header-post.jpg
 ---
 
 # Installation

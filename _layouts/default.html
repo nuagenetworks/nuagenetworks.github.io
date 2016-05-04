@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html class="no-js">
+
   {% include head.html %}
+
   <body>
     {% include header.html %}
+
+    {% include callout.html %}
+
     <div class="content">
-      {{ content }}
+        {{ content }}
+        {% include footer.html %}
     </div>
-    {% include footer.html %}
+
   </body>
 </html>

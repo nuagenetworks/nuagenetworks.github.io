@@ -1,6 +1,6 @@
 <head>
 	<meta charset="utf-8">
-	<title>{% if page.title %}{{ page.title }} |{% endif %} {{ site.theme.title }}</title>
+	<title>import nuagenetworks</title>
 	<meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.theme.description }}{% endif %}">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-Frame-Options" content="sameorigin">
@@ -31,11 +31,7 @@
 	<!-- jQuery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
-	<!-- KaTeX -->
-	{% if site.theme.katex %}
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
-	<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.js"></script>
-	{% endif %}
+    <script src="/js/script.js"></script>
 
 	<!-- Google Analytics -->
 	{% if site.theme.google_analytics %}

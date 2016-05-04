@@ -1,49 +1,46 @@
 ---
-layout: default_with_header
+layout: posts
+callout_image: header-1.jpg
+title: <pre><code class="language-js" data-lang="python"><span class="k" style="color:white">import</span> <span style="color:#f3f3f3">nuagenetworks</span></code></pre>
+subtitle: Everything About Our Open Source Software
+main_page: 1
 ---
 
-<div class="container">
-
-{% capture column1 %}
-<div class="panel panel-default">
-  <div class="panel-body" style="height:200px;">
-    <h2>Checkout our VSPK Documentation</h2>
-    Learn everything about the Virtual Services Platform SDK. From its installation to the general concepts,
-    you will find out basic and more advanced concrete examples. Let's dive in!
+<div class="posts">
+  {% for post in paginator.posts %}
+  <div class="post-teaser">
+    <header>
+      <h1>
+        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">
+          {{ post.title }}
+        </a>
+      </h1>
+      <p class="meta">
+        {{ post.date | date: "%B %-d, %Y" }}
+        {% if post.author %} - {{ post.author }}{% endif %}
+      </p>
+    </header>
+    <div class="excerpt">
+      {{ post.excerpt }}
+      <a href="{{ post.url | prepend: site.baseurl }}">Read more...</a>
+    </div>
   </div>
-  <div class="panel-footer">
-    <a href="vspkdoc/index.html" title="Read VSPK Documentation" target="_blank"><i class="fa fa-arrow-right"> VSPK Documentation</a>
-  </div>
-
+  {% endfor %}
 </div>
-{% endcapture %}
 
-{% capture column2 %}
-<div class="panel panel-default">
-  <div class="panel-body" style="height:200px;">
-    <h2>VSD CLI Usage</h2>
-    Learn how to use Nuage Networks' Command Line Interface to manage your VSD.
-  </div>
-  <div class="panel-footer">
-    <a href="vsdcli/index.html" title="Read CLI Documentation"><i class="fa fa-arrow-right"> CLI Documentation</a>
-  </div>
+{% if paginator.total_pages > 1 %}
+<div class="pagination">
+  {% if paginator.previous_page %}
+  <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}" class="button" >
+    <i class="fa fa-chevron-left"></i>
+    {{ site.theme.str_prev }}
+  </a>
+  {% endif %}
+  {% if paginator.next_page %}
+  <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}" class="button" >
+    {{ site.theme.str_next }}
+    <i class="fa fa-chevron-right"></i>
+  </a>
+  {% endif %}
 </div>
-{% endcapture %}
-
-{% capture column3 %}
-<div class="panel panel-default">
-  <div class="panel-body" style="height:200px;">
-    <h2>Read our blog</h2>
-    We provide more examples, change logs and other useful information via blog articles.
-    If you're looking for something, you should probably stop by.
-  </div>
-  <div class="panel-footer">
-    <a href="blog/index.html"><i class="fa fa-arrow-right"> Blog</a>
-  </div>
-</div>
-{% endcapture %}
-
-
-{% include columns.html %}
-
-</div>
+{% endif %}

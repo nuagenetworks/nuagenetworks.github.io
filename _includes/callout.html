@@ -1,0 +1,11 @@
+<div class="call-out" style="background: url({{site.baseurl}}/img/{{ page.callout_image }}) !important;">
+    <h1 style="margin-top: 109px" class="title">{{ page.title }}</h1>
+    <p class="meta">
+        {% if page.subtitle %}
+        {{ page.subtitle }}
+        {% else %}
+        {{ page.date | date: "%B %-d, %Y" }}
+        {% if page.author %} - {{ page.author }}{% endif %}
+        {% endif %}
+    </p>
+</div>

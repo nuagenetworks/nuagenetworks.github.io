@@ -1,7 +1,8 @@
 ---
 layout: post
 title: More VSPK Examples
-excerpt: We just released few new examples. Some of them were...<br>
+author: Christophe Serafin
+callout_image: header-3.jpg
 ---
 We just released brand new examples. Some of them were already presented within the VSPK Documentation. In the future, we will continue to add new examples according to your feedback and questions.
 
