@@ -27,7 +27,7 @@ This post is a copy of a blog post of mine on the Nuage Community.
 
 Happy reading !
 
-## Installation
+# Installation
 
 To install the Nuage VSPK, the easiest way is to use pip. Pip allows a user to quickly install a Python package with all its requirements. For the Nuage VSPK, the command is simple:
 
