@@ -354,7 +354,7 @@ The basic result should look more or less like:
 
 The Nuage VSP solution will log every event that happens on an enterprise, this includes all creations, updates and deletions of objects. In this section I will discuss a script which will gather these events and provide a nice output.
 
-The script can also be found on the [Nuage Networks VSPK Examples Github repository](https://github.com/nuagenetworks/vspk-examples/) and is called [events_overview.py](https://github.com/nuagenetworks/vspk-examples/blob/master/events_overview.py). You can follow my explanation by looking at the code located at [https://github.com/nuagenetworks/vspk-examples/blob/master/events_overview.py](https://github.com/nuagenetworks/vspk-examples/blob/master/events_overview.pyhttps://github.com/nuagenetworks/vspk-examples/blob/master/events_overview.py).
+The script can also be found on the [Nuage Networks VSPK Examples Github repository](https://github.com/nuagenetworks/vspk-examples/) and is called [events_overview.py](https://github.com/nuagenetworks/vspk-examples/blob/master/events_overview.py). You can follow my explanation by looking at the code located at [https://github.com/nuagenetworks/vspk-examples/blob/master/events_overview.py](https://github.com/nuagenetworks/vspk-examples/blob/master/events_overview.py).
 
 Again, I will only go into detail on the important bits from the Nuage VSPK standpoint, as the other sections are less relevant and just focus on argument and output handling.
 
