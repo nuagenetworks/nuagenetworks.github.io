@@ -4,7 +4,7 @@ title: Scripting with Nuage VSPK - Part 1 - Introduction & basic examples
 author: Philippe Dellaert
 tags: VSPK, open source, Python
 callout_image: nuage-community-header.jpg
-excerpt: Today i want to talk about a Nuage VSP feature which allows you to create your own tools to interact with your Nuage VSP environment, The Nuage VSPK. The Nuage VSPK uses the Nuage VSD REST API to do all its actions, so if you are familiar with the REST API, you will quickly grasp the use of the Nuage VSPK.
+excerpt: Nuage Networks has released their VSPK, an SDK with several language bindings. In this blog post we will start with an introduction and go through the basics of using the VSPK with several examples.
 
 ---
 

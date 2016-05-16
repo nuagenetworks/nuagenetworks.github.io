@@ -4,7 +4,7 @@ title: Scripting with Nuage VSPK – Part 2 – Advanced concepts & examples
 author: Philippe Dellaert
 tags: VSPK, open source, Python
 callout_image: nuage-community-header.jpg
-excerpt: Last week we introduced the basic installation and usage of the Nuage VSPK using some script examples. This week we will continue our dive into this subject by introducing some advanced concepts.
+excerpt: In this second part of our delve into the Nuage VSPK we will go deeper into more advanced concept of using the SDK. Using more complex examples, you will learn about jobs, query parameters, asychronous calls and push notifications.
 
 ---
 
