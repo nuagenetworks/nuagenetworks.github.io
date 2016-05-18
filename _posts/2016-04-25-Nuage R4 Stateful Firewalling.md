@@ -9,7 +9,7 @@ excerpt: Nuage R4.0 has been releaed with a major focus on strengthening and ext
 ---
 
 # Introduction 
-Within this blog, we will focus on the statefull firewalling capability that was introduced in R4.0 for TCP and ICMP traffic types. Stateful firewalling means that the platform will follow the different stages of a TCP/ICMP session setup and teardown. It basically provides a higher level of protection against L3/L4 attacks and prevents assymetric routing of traffic (ie. return traffic has to follow the same path). 
+Within this blog, we will focus on the stateful firewalling capability that was introduced in R4.0 for TCP and ICMP traffic types. Stateful firewalling for TCP means that the platform will follow the different stages of a TCP session setup and teardown. For ICMP, Nuage Networks will map ICMP requests for specific sub-types to their corresponding response sub-types and create the relevant return flow on the VRS. It basically provides a higher level of protection against L3/L4 attacks and prevents assymetric routing of traffic (ie. return traffic has to follow the same path). 
 
 The parts I will detail out are:
 
@@ -66,7 +66,7 @@ To  query the state of a particular session, the `ovs-appctl` command has been e
 
 _Stateful_ ACL inspection is the natural successor of using _reflexive_ rules. As such, when you perform an upgrade from 3.2 to 4.0, any reflexive ACL rules will automatically be promoted to stateful.
 
-If you use the `VSPK` or the API, you stil have the possibility of using the `v3_2` version inside your scripts while working with a 4.0 environment. When you create a `IngressACLEntryTemplate` or `EgressACLEntryTemplate`, the `reflexive` property of `v3_2` will be translated to the `stateful` property in the VSD. 
+If you use the `VSPK` or the API, you still have the possibility of using the `v3_2` version inside your scripts while working with a 4.0 environment. When you create a `IngressACLEntryTemplate` or `EgressACLEntryTemplate`, the `reflexive` property of `v3_2` will be translated to the `stateful` property in the VSD. 
 
 If you decide to upgrade your scripts to `v4_0`, please pay attention to your scripts: the `reflexive` property will not be accepted anymore and you have to specify a value for the `stateful` property instead.
 
