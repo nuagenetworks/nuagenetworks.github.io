@@ -12,6 +12,8 @@ OpenStack has a pluggable load-balancer framework, commonly referred to as LBaaS
 This post will cover how Nuage Networks VSP provides such integration based on a RedHat OSP 8 (Liberty) installation.  As usual, the HA Proxy process runs on a network node in a particular namespace. 
 
 Similar to other compute nodes, a Nuage VRS has to be installed on this node so that the load-balancer can be tied to the rest of the network. The below diagram shows the deployment architecture: 
+
+![LBaaS Deployment Architecture][architecture]
   
 All the installation steps can be automated of course. On this [link][postconfigfile], you could find a post install script that can be loaded into your OSPd 8 installation. 
 
@@ -23,6 +25,7 @@ The OpenStack Neutron Networking service offers two load balancer implementation
 
 For its integration, the Nuage Networks VSP has focused on the LBaaS v2 reference architecture which allows you to configure multiple listener ports on a single load balancer IP address. Its concepts are:
  
+![LBaaSv2 Concepts][lbaasconcepts]
 
 * **Load balancer**:  The load balancer occupies a neutron network port and has an IP address assigned from a subnet.
 * **Listener**:  Load balancers can listen for requests on multiple ports. Each one of those ports is specified by a listener.
@@ -64,7 +67,7 @@ Following the instructions from the Nuage VSP Install Guide computes:
 
 Uninstall any pre-existing Neutron components
 
-    service openstack-nova-compute stop
+    systemctl stop openstack-nova-compute
     rpm -e openstack-neutron openstack-neutron-openvswitch
     ovs-vsctl show
     ovs-vsctl del-br br-int
@@ -89,10 +92,6 @@ Configure the VRS and restart the Nuage VRS service
     echo STANDBY_CONTROLLER=<VSC Standby controller IP>  >>/etc/default/openvswitch
     systemctl restart openvswitch
 
-Install Virtualisation components
-
-    yum install libvirt python-twisted-core perl-JSON qemu-kvm
-
 ## Install the LBaaS Agent
 
 Install the neutron-lbaas-agent package
@@ -108,8 +107,8 @@ If not already installed, install HAproxy  on the Network node:
 
     yum install haproxy
 
-Note that when OSP is installed with HA controller, the `haproxy.cfg` file is already configured, and doesn’t need to be changed. 
-In case haproxy was not installed, make sure that the `haproxy` service  is starting correctly. Look in the `/etc/haprocy/haproxy.cfg` to be sure that the port used for binding is not used already. 
+Note that when the Network Node is deployed alongside the OpenStack HA set of of controllers, the `haproxy.cfg` file is already configured, and doesn’t need to be changed. 
+In case HAProxy was not installed, make sure that the `haproxy` service  is starting correctly and is not trying to listen to a port that is already in use on the system (eg port 5000 by Keystone). Look in the `/etc/haprocy/haproxy.cfg` to be sure that the port used for binding is not used already. 
 
 Add in the default section of the neutron.conf file the following
 
@@ -185,7 +184,9 @@ You can create a listener on port 80
     +--------------------------+------------------------------------------------+
 
 At this stage you should see the LB inserted in your Nuage domain
- 
+
+![Nuage VSD view of the Load Balancer][vsdview]
+
 And a namespace becomes available on your network node
 
     [root@openstack ~(keystone_admin)]# ip netns list
@@ -224,23 +225,23 @@ But also look to the vport created
 
 Now you can create a pool to your listener
 
-neutron lbaas-pool-create --lb-algorithm ROUND_ROBIN --listener listenerlb --protocol HTTP --name pool1
-Created a new pool:
-+---------------------+------------------------------------------------+
-| Field               | Value                                          |
-+---------------------+------------------------------------------------+
-| admin_state_up      | True                                           |
-| description         |                                                |
-| healthmonitor_id    |                                                |
-| id                  | 88c3081d-3f19-4e16-97ed-3dbfabf34963           |
-| lb_algorithm        | ROUND_ROBIN                                    |
-| listeners           | {"id": "8e913f9e-5f06-4be9-a155-179f6a423872"} |
-| members             |                                                |
-| name                | pool1                                          |
-| protocol            | HTTP                                           |
-| session_persistence |                                                |
-| tenant_id           | 5a8eb8f5010747c5898ba2b583eef2c0               |
-+---------------------+------------------------------------------------+
+    neutron lbaas-pool-create --lb-algorithm ROUND_ROBIN --listener listenerlb --protocol HTTP --name pool1
+    Created a new pool:
+    +---------------------+------------------------------------------------+
+    | Field               | Value                                          |
+    +---------------------+------------------------------------------------+
+    | admin_state_up      | True                                           |
+    | description         |                                                |
+    | healthmonitor_id    |                                                |
+    | id                  | 88c3081d-3f19-4e16-97ed-3dbfabf34963           |
+    | lb_algorithm        | ROUND_ROBIN                                    |
+    | listeners           | {"id": "8e913f9e-5f06-4be9-a155-179f6a423872"} |
+    | members             |                                                |
+    | name                | pool1                                          |
+    | protocol            | HTTP                                           |
+    | session_persistence |                                                |
+    | tenant_id           | 5a8eb8f5010747c5898ba2b583eef2c0               |
+    +---------------------+------------------------------------------------+
 
 List the VMs and the subnet where they are connected
  
@@ -325,4 +326,7 @@ You can now look at the HAproxy  file built for the LBaas
         server 6e6141a8-9774-4f43-b5c7-2743b4e8196b 10.93.48.2:80 weight 1
 
 [postconfigfile]: {{ site.baseurl }}/_static/lbaas-post-config-script.yaml
+[architecture]: {{ site.baseurl }}/img/posts/lbaas-with-haproxy/lbaas-architecture.png
+[lbaasconcepts]: {{ site.baseurl }}/img/posts/lbaas-with-haproxy/lbaas-openstackconcepts.png
+[vsdview]: {{ site.baseurl }}/img/posts/lbaas-with-haproxy/lbaas-nuageview.png
 
