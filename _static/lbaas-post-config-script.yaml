@@ -1,0 +1,68 @@
+heat_template_version: 2014-10-16
+
+parameters:
+  servers:
+    type: json
+  keystone_url:
+    type: string
+
+resources:
+
+  ExtraConfig:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: script
+      config:
+        str_replace:
+          template: |
+            #!/bin/sh
+
+            if [[ "$(hostname)" = *osctl* ]]; then
+               
+               # LBaaS Setup 
+               #Update Neutron Configuration
+               crudini --set /etc/neutron/neutron.conf service_providers service_provider LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default
+               crudini --set /etc/neutron/neutron.conf DEFAULT service_plugins "nuage_neutron.plugins.common.service_plugins.port_attributes.service_plugin.NuagePortAttributesServicePlugin, neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2"
+               
+               #Upgrade Neutron DB
+               neutron-db-manage --service lbaas --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/nuage/plugin.ini upgrade head
+               
+               #Restart neutron server
+               systemctl restart neutron-server
+               
+               crudini --set /etc/nova/nova.conf DEFAULT network_api_class nova.network.neutronv2.api.API
+               crudini --set /etc/nova/nova.conf DEFAULT libvirt_vif_driver nova.virt.libvirt.vif.LibvirtGenericVIFDriver
+               crudini --set /etc/nova/nova.conf DEFAULT security_group_api neutron
+               crudini --set /etc/nova/nova.conf DEFAULT firewall_driver nova.virt.firewall.NoopFirewallDriver
+               crudini --set /etc/nova/nova.conf neutron ovs_bridge alubr0
+               
+               yum install nuage-openvswitch
+
+               echo ACTIVE_CONTROLLER=10.0.0.1 >>/etc/default/openvswitch
+               echo STANDBY_CONTROLLER=10.0.0.2 >>/etc/default/openvswitch
+               
+               systemctl restart openvswitch
+               
+               #update conf files
+               crudini --set /etc/neutron/neutron.conf DEFAULT ovs_integration_bridge alubr0
+               crudini --set /etc/neutron/lbaas_agent.ini DEFAULT ovs_use_veth False
+               crudini --set /etc/neutron/lbaas_agent.ini DEFAULT interface_driver nuage_neutron.lbaas.agent.nuage_interface.NuageInterfaceDriver
+               
+               #Restart the services
+               systemctl restart neutron-server
+               systemctl restart neutron-lbaasv2-agent
+               
+
+            fi
+ 
+ 
+          params:
+            _KEYSTONE_URL_: {get_param: keystone_url}
+  ExtraDepoloyments:
+    type: OS::Heat::SoftwareDeployments
+    properties:
+      servers:  {get_param: servers}
+      config: {get_resource: ExtraConfig}
+      actions: ['CREATE','UPDATE']
+
+
