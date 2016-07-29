@@ -48,11 +48,12 @@ The actuall install of Jekyll relies on the `Gemfile` located in the root direct
 
     $ bundle install
 
-Finally the site can be build using
+Finally the site can be built and served using
 
-    $ bundle exec jekyll serve --detach --host=0.0.0.0
+    $ bundle exec jekyll build 
+    $ bundle exec jekyll serve --watch --host=0.0.0.0 --detach
 
-After which you can browse the updated site via your browser.
+After which you can browse the updated site via your browser. By specifying the `watch` option, it will automatically pick up any changes and update the site contents.
 
 A more detailed list of install instructions can be found on https://help.github.com/articles/setting-up-your-github-pages-site-locally-with-jekyll/.
 
