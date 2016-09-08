@@ -3,8 +3,8 @@ baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://nuagenetworks.net" # the base hostname & protocol for your site
 include: ['_static']
 
-# THEME-SPECIFIC CONFIGURATION
-theme:
+# nuage_theme-SPECIFIC CONFIGURATION
+nuage_theme:
   # Meta
   title: nuagenetworks
   avatar: avatar.png
@@ -60,5 +60,4 @@ sass:
   sass_dir: _sass
   style: :compressed
 
-gems: [jekyll-paginate] 
-
+gems: [jekyll-paginate]
