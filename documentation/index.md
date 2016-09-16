@@ -4,6 +4,13 @@ title: Command Line Interface
 callout_image: header-post.jpg
 ---
 
+## VSD API Documentation
+
+The full documentation on the `vsd` api can be found [here]({{site.baseurl}}/vsd-api-documentation)
+
+ - [Github Repository](https://github.com/nuagenetworks/vsd-api-documentation)
+ - [Bug Tracker](https://github.com/nuagenetworks/vsd-api-documentation/issues)
+
 ## VSD CLI Documentation
 
 The full documentation on the `vsd` cli can be found [here]({{site.baseurl}}/vsdcli)
