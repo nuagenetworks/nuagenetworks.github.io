@@ -18,9 +18,10 @@ The full documentation on the `vsd` cli can be found [here]({{site.baseurl}}/vsd
  - [Github Repository](https://github.com/nuagenetworks/vsdcli)
  - [Bug Tracker](https://github.com/nuagenetworks/vsdcli/issues)
 
-## VSPK Documentation
+## VSPK-Python Documentation
 
-The full API documentation on the `vspk` can be found [here]({{site.baseurl}}/vspkdoc/index.html)
+The full documentation on the `vspk` can be found [here]({{site.baseurl}}/vspkdoc/index.html)
 
- - [Github Repository](https://github.com/nuagenetworks/vspk)
- - [Bug Tracker](https://github.com/nuagenetworks/vspk/issues)
+ - [Github Repository](https://github.com/nuagenetworks/vspk-python)
+ - [Bug Tracker](https://github.com/nuagenetworks/vspk-python/issues)
+ - [PyPI package](https://pypi.python.org/pypi/vspk/)
