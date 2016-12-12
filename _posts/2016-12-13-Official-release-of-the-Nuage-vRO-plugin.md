@@ -11,7 +11,7 @@ Today, Nuage Networks officially releases its plugin for vRealize Orchestrator, 
 
 Together with the release of this plugin, we are also releasing a set of advanced workflows that can be used with our plugin. This also contains a set of workflows which can be used to integrate Nuage VSP with vCloud Director. 
 
-If you are interested in using our plugin, you can get it in the [VMware Solutions Exchange](#), or directly from our [vspk-vro Github repository](https://github.com/nuagenetworks/vspk-vro/releases/latest). The advanced workflows are also available on the [VMware Solutions Exchange](#), or directly from our [vspk-vro-workflows Github repository](https://github.com/nuagenetworks/vspk-vro-workflows/release/latest)
+If you are interested in using our plugin, you can get it in the [VMware Solutions Exchange](https://solutionexchange.vmware.com/store/products/nuage-networks-vsp-vro-plugin), or directly from our [vspk-vro Github repository](https://github.com/nuagenetworks/vspk-vro/releases/latest). The advanced workflows are also available on the [VMware Solutions Exchange](https://solutionexchange.vmware.com/store/products/nuage-networks-vsp-vro-advanced-workflows), or directly from our [vspk-vro-workflows Github repository](https://github.com/nuagenetworks/vspk-vro-workflows/release/latest)
 
 The plugin and the advanced workflows are released as fully open source projects and the source can be found at our [vspk-vro Github repo](https://github.com/nuagenetworks/vspk-vro) and our [vspk-vro-workflows Github repository](https://github.com/nuagenetworks/vspk-vro-workflows). The plugin code is automatically generated from our API specifications with every release. As a result, our plugin will always support the latest Nuage functionality.
 
