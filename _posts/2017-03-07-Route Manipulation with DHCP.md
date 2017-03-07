@@ -195,7 +195,7 @@ PING 10.10.11.2 (10.10.11.2): 56 data bytes
 Hopefully by now you have a better understanding on how to manage and push static routes via DHCP options when using Nuage Networks. Good luck trying this out for yourself !
 
 
-[TargetNetworkDesign]: {{ site.baseurl}}/img/posts/route-manipulation-with-dhcp-options/TargetNetworkDesign
-[VSD-NetworkDesign]: {{ site.baseurl}}/img/posts/route-manipulation-with-dhcp-options/VSD-NetworkDesign
-[VSD-DHCPOption3]: {{ site.baseurl}}/img/posts/route-manipulation-with-dhcp-options/VSD-DHCPOption3
-[VSD-DHCPOption121]: {{ site.baseurl}}/img/posts/route-manipulation-with-dhcp-options/VSD-DHCPOption121
+[TargetNetworkDesign]: {{ site.baseurl}}/img/posts/route-manipulation-with-dhcp-options/TargetNetworkDesign.png
+[VSD-NetworkDesign]: {{ site.baseurl}}/img/posts/route-manipulation-with-dhcp-options/VSD-NetworkDesign.png
+[VSD-DHCPOption3]: {{ site.baseurl}}/img/posts/route-manipulation-with-dhcp-options/VSD-DHCPOption3.png
+[VSD-DHCPOption121]: {{ site.baseurl}}/img/posts/route-manipulation-with-dhcp-options/VSD-DHCPOption121.png     
