@@ -1,11 +1,10 @@
---
+---
 layout: post
 title: Exposing Nuage subnets in different Openstack tenants
 author: Jonas Vermeulen
 callout_image: nuage-community-header.jpg
 tags: openstack neutron basic domain subnets vsd-managed
-excerpt:  This blog describes how to expose subnets created in Nuage Networks VSD in an Openstack tenant  of choice 
-
+excerpt:  This blog describes how to expose subnets created in Nuage Networks VSD in an Openstack tenant of choice 
 ---
 
 # Introduction
@@ -14,9 +13,9 @@ Within Nuage Networks VSD you get a lot of flexibility to design your network to
 
 In the context of Openstack, it is not always possible to create a direct mapping between this network topology and the tenant structure. There could be multiple reasons:
 
-1. **Tenants only have access to a subset of subnets of a Nuage Networks domain.** Typically in Openstack you would need to attach subnets/networks to a router . When each tenant creates its own router, it is not trivial anymore to link the two and setup reachability.
+1. **Tenants should only have access to particular subnets of a Nuage Networks domain.** In Openstack, a tenant user can create subnets and attach these to a router. It is not trivial though to link such router to another tenant's router and setup reachability between them.
 2. **Virtual Machines (VMs) of tenant A need to route to VMs of tenant B**. Direct routing implies VMs are part of the same Nuage Networks L3 domain. However mapping this to a router in Openstack is not possible since a router is typically managed under a single tenant.
-3. **You like to use the Nuage Networks _Zones_ as part of your network design.** This could be done to segregate projects, security zones or create ACL policies on. There is no concept of grouping subnets together in Openstack.
+3. **Network Administrators like to use the Nuage Networks _Zones_ as part of your network design.** This could be done to segregate projects, security zones or create ACL policies on. There is no concept of grouping subnets in Openstack.
 
 To accomodate this, you can expose Nuage subnets explicitly to a tenant by using the `--nuagenet` argument of the `neutron subnet-create` command.
 
@@ -131,4 +130,4 @@ There is also a full automation available for Nuage Networks 3.0/3.2 using VSD R
 
 
 [VSD-DomainDesign]: {{ site.baseurl}}/img/posts/exposing-nuage-subnets-in-openstack-tenants/VSD-DomainDesign.PNG
-[Openstack-MappedSubnets]: {{ site.baseurl}}/img/posts/exposing-nuage-subnets-in-openstack-tenants/OPenstack-MappedSubnets.png
+[Openstack-MappedSubnets]: {{ site.baseurl}}/img/posts/exposing-nuage-subnets-in-openstack-tenants/Openstack-MappedSubnets.png
