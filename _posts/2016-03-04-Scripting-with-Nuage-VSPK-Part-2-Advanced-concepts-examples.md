@@ -26,7 +26,7 @@ Happy reading!
 
 A Job is a task the VSD has to execute on an entity under its control. For instance if you use the GUI to export a domain template, in the background a Job is created on that specific domain template and the GUI will check the status of that job until it is finished. Once it is finished, the GUI will gather the job result, which in this case is the JSON export of the chosen Domain Template.
 
-To create a job on an entity, you first create the Job object with the correct command (for a list, check the API docs) and create it as a child of the entity:
+To create a job on an entity, you first create the Job object with the correct command (for a list, check the [API docs](https://nuagenetworks.github.io/vsd-api-documentation/v4_0/job.html)) and create it as a child of the entity:
 
 {% highlight python %}
 # Assuming import of vsdk, connected to the API as the nc variable
@@ -86,7 +86,7 @@ If you have ever used the VSD GUI to create ACL policies and rules, you will hav
 
 This whole process uses jobs to change the state of the domain into policy editing mode and to commit these changes. The following script illustrates how this is done.
 
-{% highlight python %}
+{% highlight python linenos %}
 # Creating the job to begin the policy changes
 job = vsdk.NUJob(command='BEGIN_POLICY_CHANGES')
 domain.create_child(job)
