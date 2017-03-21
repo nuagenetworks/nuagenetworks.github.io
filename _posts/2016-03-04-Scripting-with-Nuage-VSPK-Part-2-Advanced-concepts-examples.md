@@ -86,7 +86,7 @@ If you have ever used the VSD GUI to create ACL policies and rules, you will hav
 
 This whole process uses jobs to change the state of the domain into policy editing mode and to commit these changes. The following script illustrates how this is done.
 
-{% highlight python linenos %}
+{% highlight python %}
 # Creating the job to begin the policy changes
 job = vsdk.NUJob(command='BEGIN_POLICY_CHANGES')
 domain.create_child(job)
