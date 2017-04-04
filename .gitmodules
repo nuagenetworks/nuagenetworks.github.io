@@ -1,3 +1,7 @@
 [submodule "vspkdoc"]
 	path = vspkdoc
 	url = https://github.com/nuagenetworks/vspkdoc
+[submodule "vsd-api-documentation"]
+	path = vsd-api-documentation
+	url = https://github.com/nuagenetworks/vsd-api-documentation
+	branch = 4.0
