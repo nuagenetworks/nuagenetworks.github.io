@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Certificate based authentication with the VSPK
+title: Certificate based authentication with VSPK
 author: Philippe Dellaert
 callout_image: nuage-community-header.jpg
 tags: VSPK, API, Security, Authentication, Certificate
