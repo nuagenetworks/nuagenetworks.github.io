@@ -83,3 +83,13 @@ if cert, err := tls.LoadX509KeyPair("/Users/pdellaer/.nuage/pdellaert.pem", "/Us
 }
 {% endhighlight %}
 
+# Advantages of certificate based authentication
+In the introduction to this blog post, we mentioned some of the down sides of using the username/password authentication approach with our VSPKs. The two biggest disadvantages are that you have to store a username and password in clear text on your system or in your tool or script and that this approach uses a API token, which expires after 24 hours, leaving you to build functionality around this caveat.
+
+Certificate based authentication solves both of these issues:
+* There is no need to store any password on your system, as you are using certificates, which are more easily manageable. 
+* Certificates do not use API tokens, so there is no need to verify if a token is still valid
+
+As an extra security measure, certificates can be revoked, allowing better control over which process has access to the system.
+
+Overall, certificate based authentication in our API and VSPKs is the preferred way for working with our platform in a secure and easy way.
