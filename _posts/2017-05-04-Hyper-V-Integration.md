@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Hyper-V Integration
-author: Jonas Vermeulen & Philippe Dellaert
+title: Hyper-V Integration for OpenStack
+author: Jonas Vermeulen, Harmeet Sahni & Philippe Dellaert
 callout_image: nuage-community-header.jpg
 tags: Hyper-V, Integration, OpenStack, CloudBase, Openvswitch, OVS, VRS, VSC
 excerpt: Recently, Nuage Networks has leveraged their work and extended its Software-Defined Networking (SDN) platform to include Hyper-V support. As such, VXLAN overlay networks can be stretched across KVM, VMware, Hyper-V hypervisors and hardware VTEPs – all provisioned out of the same network policy system. 
@@ -34,10 +34,10 @@ OVS for Hyper-V uses the extensible Hyper-V Virtual Switch which allows you to e
 As such an extension, you can review it in the Virtual Switch Extensions of Windows UI or in PowerShell:
 
 ![Hyper-V extensible switch GUI][hyper-v-switch-gui]
-{: center-img}
+{: center-img }
 
 ![Hyper-V extensible switch CLI][hyper-v-switch-cli]
-{: center-img}
+{: center-img }
 
 The user space portion of the OVS solution was ported from the Linux OVS implementation and comes with a very similar set of tools and daemons. 
 
