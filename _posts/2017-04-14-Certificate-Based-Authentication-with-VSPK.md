@@ -54,7 +54,7 @@ From this list, copy the last two files (in the example `pdellaert-Key.pem` and 
 ## Using certificate based authentication
 To use certificate based authentication, your tool or script will have to connect to the VSD using a different port, *7443* instead of 8443. This is where the certificate based authentication service runs.
 
-Below are examples of setting up a session using certificate based authentication using the Python and Go VSPKs. 
+Below are examples of setting up a session using certificate based authentication using the Python, Go and Java VSPKs. 
 
 ### Python VSPK
 
@@ -81,6 +81,38 @@ if cert, err := tls.LoadX509KeyPair("/Users/pdellaer/.nuage/pdellaert.pem", "/Us
 } else {
     mysession, root = vspk.NewX509Session(&cert, "http://localhost:7443")
 }
+{% endhighlight %}
+
+### Java VSPK
+
+Note that VSPK Release 4.0.8.1 or later is required.  You can download the latest version [here](https://github.com/nuagenetworks/vspk-java/releases/latest).
+
+{% highlight java %}
+import java.io.File;
+import java.util.List;
+
+import net.nuagenetworks.bambou.RestException;
+import net.nuagenetworks.vspk.v4_0.Enterprise;
+import net.nuagenetworks.vspk.v4_0.VSDSession;
+import net.nuagenetworks.vspk.v4_0.fetchers.EnterprisesFetcher;
+
+public class FetchEnterprisesUsingCerts {
+  public static void main(String[] args) throws RestException {
+   String host = "https://localhost:7443";
+   File certFile = new File("/Users/pdellaer/.nuage/pdellaert.pem");
+   File keyFile = new File("/Users/pdellaer/.nuage/pdellaert-Key.pem");
+
+   VSDSession session = new VSDSession("pdellaert", "csp", host, certFile, keyFile);
+   session.start();
+   EnterprisesFetcher fetcher = session.getMe().getEnterprises();
+   List<Enterprise> enterprises = fetcher.get();
+   System.out.println("Number of Enterprises found : " + enterprises.size());
+   for (Enterprise enterprise : enterprises) {
+      System.out.println("Enterprise: " + enterprise);
+   }
+  }
+}
+
 {% endhighlight %}
 
 # Advantages of certificate based authentication
