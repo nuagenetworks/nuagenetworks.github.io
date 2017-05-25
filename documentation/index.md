@@ -20,7 +20,7 @@ The full documentation on the `vsd` cli can be found [here]({{site.baseurl}}/vsd
 
 ## VSPK-Python Documentation
 
-The full documentation on the `vspk` can be found [here]({{site.baseurl}}/vspkdoc/html/index.html)
+The full documentation on the `vspk` can be found [here]({{site.baseurl}}/vspkdoc/index.html)
 
  - [Github Repository](https://github.com/nuagenetworks/vspk-python)
  - [Bug Tracker](https://github.com/nuagenetworks/vspk-python/issues)
