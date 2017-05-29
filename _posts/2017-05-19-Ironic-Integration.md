@@ -7,8 +7,6 @@ tags: Openstack Ironic Liberty Bare Metal BareMetal
 excerpt: OpenStack bare metal provisioning a.k.a Ironic is an integrated OpenStack program which allows for flexible provisioning and allocation of bare metals to tenants. This post how Nuage Networks VSP extends these capabilities for flexible allocation to individual tenant subnets using the NuageNetworks 7850 VSG.
 ---
 
-{:center-img: style="text-align: center;"}
-
 # Introduction
 NuageNetworks allows for the flexible mapping of virtual machines and bare metal servers to tenant networks. Within an OpenStack environment, the Ironic project handles the management of bare metals. In this application note, the high level architecture and workflow will be described, followed by how you can setup the integration yourself and attach your own bare metal to an OpenStack Tenant subnet.
 
@@ -405,9 +403,9 @@ sudo yum install grub2-efi shim
 sudo cp /boot/efi/EFI/centos/shim.efi /tftpboot/bootx64.efi
 sudo cp /boot/efi/EFI/centos/grubx64.efi /tftpboot/grubx64.efi
 
-GRUB_DIR=/tftpboot/EFI/centos   
+GRUB_DIR=/tftpboot/EFI/centos
 sudo mkdir -p $GRUB_DIR
-    
+
 cd $GRUB_DIR
 vim grub.cfg
 
@@ -454,6 +452,7 @@ Also an Ironic Python Agent Image is required to facilitate actions such as insp
 Detailed instructions are on https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html#image-requirements and https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html#building-or-downloading-a-deploy-ramdisk-image
 
 ### Create user image 
+
 ```
 yum install diskimage-builder --disablerepo="*" --enablerepo="centos-openstack-liberty"
 mkdir diskimage; cd diskimage/
@@ -506,20 +505,20 @@ https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html#en
 
 ```
 # test IPMI access
-[root@osc-36102 tftpboot(keystone_)]$ ipmitool -I lanplus -H 10.167.36.125 -U ADMIN -P ADMIN chassis power status
+ipmitool -I lanplus -H 10.167.36.125 -U ADMIN -P ADMIN chassis power status
 Chassis Power is on
 
-# Create node, e.g for baremetal1
-ironic node-create -d pxe_ipmitool -n baremetal1
+# Create node, e.g for server6
+ironic node-create -d pxe_ipmitool -n server6
 
 # Enable UEFI 
-ironic node-update baremetal1 add properties/capabilities='boot_mode:uefi'
+ironic node-update server6 add properties/capabilities='boot_mode:uefi'
 
 # Update flavor, ipmi address/username/password, and deploy images:
-ironic node-update baremetal1 add properties/cpus=2 properties/memory_mb=1024 properties/local_gb=100 properties/cpu_arch=x86_64 properties/capabilities="boot_option:local" driver_info/ipmi_address=10.167.36.126 driver_info/ipmi_username=ADMIN driver_info/ipmi_password=ADMIN driver_info/deploy_kernel=$deploy_kernel driver_info/deploy_ramdisk=$deploy_ramdisk
+ironic node-update server6 add properties/cpus=2 properties/memory_mb=1024 properties/local_gb=100 properties/cpu_arch=x86_64 properties/capabilities="boot_option:local" driver_info/ipmi_address=10.167.36.126 driver_info/ipmi_username=ADMIN driver_info/ipmi_password=ADMIN driver_info/deploy_kernel=$deploy_kernel driver_info/deploy_ramdisk=$deploy_ramdisk
 
 # create ironic port with MAC address of the PXE interface 
-node_uuid=`ironic node-list | grep baremetal1 | awk '{print $2}'`
+node_uuid=`ironic node-list | grep server6 | awk '{print $2}'`
 ironic port-create -n $node_uuid -a 0c:c4:7a:0f:57:3c
 
 # get UUID of this port
@@ -542,7 +541,7 @@ During the process, we can see the new baremetal in the bootstrapping network
 
 After booting (this can take a while), you can verify the ironic node:
 ```
-ironic node-validate baremetal1
+ironic node-validate server6
 +------------+--------+---------------------------------------------------------------+
 | Interface  | Result | Reason                                                        |
 +------------+--------+---------------------------------------------------------------+
@@ -571,7 +570,7 @@ ironic node-list --provision-state available --maintenance false --associated fa
 +--------------------------------------+---------+---------------+-------------+--------------------+-------------+
 | UUID                                 | Name    | Instance UUID | Power State | Provisioning State | Maintenance |
 +--------------------------------------+---------+---------------+-------------+--------------------+-------------+
-| 94faebbe-3c07-4f2c-9e8c-079ba89a2cb9 | baremetal1 | None          | power off   | available          | False       |
+| 94faebbe-3c07-4f2c-9e8c-079ba89a2cb9 | server6 | None          | power off   | available          | False       |
 +--------------------------------------+---------+---------------+-------------+--------------------+-------------+
 ```
 
@@ -585,28 +584,35 @@ Make sure the node is in available state
 
 If the node is in error state, and you want to move it back to manageable, first change the state to deleted.
 ```
-[root@osc-36102 ~(keystone_)]$ ironic node-list
+ironic node-list
 +--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
 | UUID                                 | Name    | Instance UUID                        | Power State | Provisioning State | Maintenance |
 +--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
 | a3da932d-9dfd-440e-ae37-7b46c0f02cb7 | server5 | 14de0f98-e112-42c6-bd0f-b9a0b30fe369 | power on    | active             | False       |
-| 94faebbe-3c07-4f2c-9e8c-079ba89a2cb9 | baremetal1 | None                                 | power off   | error              | False       |
+| 94faebbe-3c07-4f2c-9e8c-079ba89a2cb9 | server6 | None                                 | power off   | error              | False       |
 +--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
 
- [root@osc-36102 ~(keystone_)]$ ironic --ironic-api-version 1.11 node-set-provision-state  baremetal1 deleted
+ironic --ironic-api-version 1.11 node-set-provision-state  server6 deleted
 
-[root@osc-36102 ~(keystone_)]$ ironic --ironic-api-version 1.11 node-set-provision-state  baremetal1 manage
+ironic --ironic-api-version 1.11 node-set-provision-state  server6 manage
 
-[root@osc-36102 ~(keystone_)]$ ironic --ironic-api-version 1.11 node-set-provision-state  baremetal1 provide
+ironic --ironic-api-version 1.11 node-set-provision-state  server6 provide
 
-[root@osc-36102 ~(keystone_)]$ ironic node-list
+ironic node-list
 +--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
 | UUID                                 | Name    | Instance UUID                        | Power State | Provisioning State | Maintenance |
 +--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
 | a3da932d-9dfd-440e-ae37-7b46c0f02cb7 | server5 | 14de0f98-e112-42c6-bd0f-b9a0b30fe369 | power on    | active             | False       |
-| 94faebbe-3c07-4f2c-9e8c-079ba89a2cb9 | baremetal1 | None                                 | power off   | available         | False       |
+| 94faebbe-3c07-4f2c-9e8c-079ba89a2cb9 | server6 | None                                 | power off   | available          | False       |
 +--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
 ```
+
+### Node stuck in bootstrap step
+
+Remove the port in Openstack
+* Ensure VPort, PolicyGropu and ACL in provisioning network are cleaned up
+* Check Permissions on ACL
+
 
 [nuage-target-topology]: {{ site.baseurl}}/img/posts/ironic-integration/nuage-target-topology.png
 [ironic-nuage-components]: {{ site.baseurl}}/img/posts/ironic-integration/ironic-nuage-components.png
