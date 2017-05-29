@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Integrating Nuage VSP with Ironic for multi-tenant management of bare-metals 
+title: Integrating Nuage VSP with Ironic for multi-tenant management of bare-metals (UNDER REVIEW)
 author: Dieter De Moitie, Jonas Vermeulen
 callout_image: nuage-community-header.jpg
 tags: Openstack Ironic Liberty Bare Metal BareMetal 
@@ -62,17 +62,17 @@ For redundancy, two VSGs are combined in a Redundancy Group with MCLAG-interface
 
 The workflow to boot a server dynamically to a tenant network can be described in following two steps
 
-### 0. Enroll the server as a node in Ironic
+### Initial enrollment of the server as a node in Ironic
 
-Each bare metal first has to be provisioned as an Ironic Node. This is an administrative task, after which Ironic can use the IPMI interface of the bare metal server to power on/power off the machine and an image can be transferred to the node. 
-As part of the enrollment, properties such as boot method, switch network connection, IPMI address, etc. can be provided.
+Each bare metal first has to be provisioned as an Ironic Node. This is an administrative task to ensure the Openstack Compute service sees the available hardware. After enrollment Ironic can use the IPMI interface of the bare metal server to power on/power off the machine and a user image can be transferred to the node. 
+As part of the enrollment, properties such as boot method, switch network connection, IPMI address, etc. need to be provided.
 
 
 ### 1. Power up in Bootstrapping Network
 
 The Ironic node will use the IPMI interface of a bare metal server to power on/power off the machine upon creation/deletion of a bare metal server. Initially, the bare metal server will be connected to a Bootstrapping Network. It will use PXE boot to get the deployment image from the Ironic node.  Once booted, the deployment image will download and install the final user image.
 
-![Power up in bootstrap network][ironic-bootstrap] 
+![Power up in bootstrap network][ironic-bootstrap-nw] 
 
 ### 2. Mapping to Final Overlay Network
 
