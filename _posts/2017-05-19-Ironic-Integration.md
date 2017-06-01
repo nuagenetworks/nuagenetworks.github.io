@@ -91,15 +91,32 @@ To integrate OpenStack Ironic with Nuage Networks, following steps have to be fo
 5.  Enroll an Ironic Node
 
 ## Preparation of Top-of-Rack switches
-For a redundant connection from server to top-of-rack switches, the pair of VSG
+For a redundant connection from server to top-of-rack switches, the pair of VSG needs to be configured as Multi-Chassis Redundancy Group with MC-LAG towards a bonded interface on the Bare Metal node.
+The _lag_ on the VSG needs to be configured with a `dynamic-service-profile` to allow being programmed by VSD.
 
+### Configure dynamic service profile
+A dynamic service profile needs to be assigned on all ports or lags that need to be programmed by VSD. 
+In the context of `Ironic`, usually untagged traffic is expected, but for future-proofness, a full open vlan range will be used.
+
+```
+*A:VSG-361>config>service>dynamic-services# info
+----------------------------------------------
+            port-profile "access-ports" create
+                vlan-range 0-4094 mode push create
+                exit
+                no shutdown
+            exit
+----------------------------------------------
+```
+
+The same profile should be configured on VSG2.
+ 
 ### Create the VSG redundancy group
-Although not required, it is advised to configure two VSGs in a Multi-Chassis Redundancy Group for redundancy. To allow PXE boot over just one interface (and disabling the other interface), LACP fallback is required. 
+Although not required, it is advised to configure two VSGs in a Multi-Chassis Redundancy Group for redundancy. 
 
- 
 
-Follow section *MultiChassis Link Aggregation Group*  of the Nuage Networks VSP User Guide to configure the VSGs. Create the needed lags in the VSD, but do not create the VLAN identifiers itself. This will be done by `neutron`.
- 
+Follow section *MultiChassis Link Aggregation Group*  of the Nuage Networks VSP User Guide to configure the VSGs. Create the needed lags in the VSD, but do not create the VLAN identifiers itself. This will be done by the Openstack services `ìronic` and  `neutron`.
+
 
 ### Configuring LACP fallback
 In case of a redundancy group, LACP fallback is required. LACP fallback allows PXE boot by disabling one port of the lag if no LACP packets are received.
@@ -189,22 +206,32 @@ No. of LAG Ids: 1
 ```
 
 
-## Create Bootstrapping Network on OpenStack Controller
+## Create Bootstrapping Network on Nuage VSD
 
-The Bootstrapping Network can be created on the OpenStack Controller as follows:
+
+The Bootstrapping Network is a simple network implemented as L2 domain that can be created on the OpenStack Controller or Nuage VSP. In this application note, we will use VSD Managed mode. The advantage of this is that ACLs or Security Groups are not configured automatically and do not consuem system resources on VSG.
+
+![Creating a L2 domain in Nuage for the bootstrapping network][nuage-boostrap-nw]
+
+Once created, you can make it available to Openstack admin project by using the UUID as `nuagenet` parameter:
+
 ```
 neutron net-create provisioning_net
-neutron subnet-create provisioning_net 10.0.0.0/24 --disable-dhcp
-    
+neutron subnet-create provisioning_net --name provisioning_subnet 10.0.0.0/24 --disable-dhcp --nuagenet d268e38b-493c-44d0-8829-4a501fb0f79d --net-partition OpenStack_default
+```
+
+The Ironic Controller has to be attached to this bootstrapping network. The simplest way is to create a VLAN (e.g. `0`) on the gateway port (e.g. `1/1/2`) which will connect the Ironic controller into this domain.
+
+```
 # grep the id of the provisioning subnet:
 provisioning_subnet_id=`neutron subnet-list | grep provisioning_subnet | awk '{ print $2 }'`
 
-# In the VSD, create a VLAN (0 in example below) on the gateway port which will connect the Ironic controller into the provisioning subnet. 
+ In the VSD, create a VLAN (0 in example below) on the gateway port which will connect the Ironic controller into the provisioning subnet. 
 
 # From OpenStack, add this vlan id into the provisioning subnet. 
 ironic_gateway_port=`neutron nuage-gateway-vlan-show --gateway 17.100.36.110 --gatewayport 1/1/2 0 | grep id | awk '{print $4}'`
 
-neutron nuage-gateway-vport-create --tenant-id ironic-test --subnet $provisioning_subnet_id $ironic_gateway_port
+neutron nuage-gateway-vport-create --tenant-id admin --subnet $provisioning_subnet_id $ironic_gateway_port
 ```
 
 ## Deploy Ironic Controller VM
@@ -618,5 +645,6 @@ Remove the port in Openstack
 [ironic-nuage-components]: {{ site.baseurl}}/img/posts/ironic-integration/ironic-nuage-components.png
 [ironic-bootstrap-nw]: {{ site.baseurl}}/img/posts/ironic-integration/ironic-bootstrap-nw.png
 [ironic-tenant-nw]: {{ site.baseurl}}/img/posts/ironic-integration/ironic-tenant-nw.png
+[nuage-bootstrap-nw]: {{ site.baseurl}}/img/posts/ironic-integration/nuage-bootstrap-nw.png
 [nuage-bootstrap-nw-with-bm]: {{ site.baseurl}}/img/posts/ironic-integration/nuage-bootstrap-nw-with-bm.png
 [nuage-tenant-nw-with-bm]:  {{ site.baseurl}}/img/posts/ironic-integration/nuage-tenant-nw-with-bm.png
