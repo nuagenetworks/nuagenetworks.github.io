@@ -91,8 +91,14 @@ To integrate OpenStack Ironic with Nuage Networks, following steps have to be fo
 5.  Enroll an Ironic Node
 
 ## Preparation of Top-of-Rack switches
-For a redundant connection from server to top-of-rack switches, the pair of VSG needs to be configured as Multi-Chassis Redundancy Group with MC-LAG towards a bonded interface on the Bare Metal node.
-The _lag_ on the VSG needs to be configured with a `dynamic-service-profile` to allow being programmed by VSD.
+Any port or lag on the VSG can be used for attachment of bare metals and mapping to a tenant network.
+* The port or lag on the VSG needs to be configured with a `dynamic-service-profile` to allow being programmed by VSD. 
+* For a redundant connection from server to top-of-rack switches
+  * the pair of VSG needs to be configured as Multi-Chassis Redundancy Group 
+  * LACP fallback is required for PXEBOOT to work
+
+
+ 
 
 ### Configure dynamic service profile
 A dynamic service profile needs to be assigned on all ports or lags that need to be programmed by VSD. 
