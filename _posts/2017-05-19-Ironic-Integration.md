@@ -215,18 +215,18 @@ No. of LAG Ids: 1
 ## Create Bootstrapping Network on Nuage VSD
 
 
-The Bootstrapping Network is a simple network implemented as L2 domain that can be created on the OpenStack Controller or Nuage VSP. In this application note, we will use VSD Managed mode. The advantage of this is that ACLs or Security Groups are not configured automatically and do not consuem system resources on VSG.
+The Bootstrapping Network is a simple network implemented as L2 domain that can be created on the OpenStack Controller or Nuage VSP. In this application note, we will use VSD Managed mode. The advantage of this is that ACLs or Security Groups are not configured automatically and do not consume system resources on VSG.
 
-![Creating a L2 domain in Nuage for the bootstrapping network][nuage-boostrap-nw]
+![Creating a L2 domain in Nuage for the bootstrapping network][nuage-bootstrap-nw]
 
-Once created, you can make it available to Openstack admin project by using the UUID as `nuagenet` parameter:
+Once created, you can make it available to OpenStack admin project by using the UUID as `nuagenet` parameter:
 
 ```
 neutron net-create provisioning_net
-neutron subnet-create provisioning_net --name provisioning_subnet 10.0.0.0/24 --disable-dhcp --nuagenet d268e38b-493c-44d0-8829-4a501fb0f79d --net-partition OpenStack_default
+neutron subnet-create provisioning_net --name provisioning_subnet 192.168.0.0/24 --disable-dhcp --nuagenet d268e38b-493c-44d0-8829-4a501fb0f79d --net-partition Ironic_enterprise
 ```
 
-The Ironic Controller has to be attached to this bootstrapping network. The simplest way is to create a VLAN (e.g. `0`) on the gateway port (e.g. `1/1/2`) which will connect the Ironic controller into this domain.
+The Ironic Controller has to be attached to this bootstrapping network. The simplest way is to create a VLAN (e.g. `0`) on the gateway port (e.g. `1/1/2`) which will connect the Ironic controller into this domain. In this application note, 192.168.0.1 was chosen as the IP of the Ironic Controller in this network.
 
 ```
 # grep the id of the provisioning subnet:
@@ -257,8 +257,6 @@ yum install centos-release-openstack-liberty
 ### Configure Keystone for Ironic Service
 
 ```
-# Copy over keystonerc_admin from the OpenStack controller
-
 keystone user-create --name=ironic --pass=<kspass> --email=ironic@example.com
 keystone user-role-add --user=ironic --tenant=services --role=admin
 keystone service-create --name=ironic --type=baremetal --description="Ironic bare metal provisioning service"
@@ -275,11 +273,10 @@ keystone endpoint-create \
 For interworking between Nuage Networks and OpenStack Liberty, the upstream Ironic Packages had to be slightly patched by the Nuage team. As such gateway ports could be created on a per-tenant basis. 
 For ease of installation, the Nuage Networks team have repackaged the Ironic components, so they could be installed with: 
 ```
-yum localinstall openstack-ironic-common-4.2.4-4.0.7_119_nuage.noarch.rpm
-yum localinstall openstack-ironic-api-4.2.4-4.0.7_119_nuage.noarch.rpm
-yum localinstall openstack-ironic-conductor-4.2.4-4.0.7_119_nuage.noarch.rpm
-
-yum -y install nuage-ironic-nova-4.2.4-4.0.7_119.noarch.rpm
+yum localinstall openstack-ironic-common-*_nuage.noarch.rpm
+yum localinstall openstack-ironic-api-*_nuage.noarch.rpm
+yum localinstall openstack-ironic-conductor-*_nuage.noarch.rpm
+yum localinstall nuage-ironic-nova-*.noarch.rpm
 yum install python-ironicclient
 ```
 
@@ -328,6 +325,10 @@ rabbit_virtual_host = /
 rabbit_ha_queues = False
 heartbeat_rate=2
 heartbeat_timeout_threshold=0
+
+[conductor]
+# IP of the Ironic Conductor in the provisioning subnet:
+api_url=http://192.168.0.1:6385
 ```
 
 Cleaning is a configurable set of steps, such as erasing disk drives, that are performed on the node to ensure it is in a baseline state and ready to be deployed to. This is done after instance deletion, and during the transition from a "managed" to "available" state. Cleaning is enabled by default:
@@ -340,31 +341,38 @@ clean_nodes=true
 The Ironic Conductor node also runs Nova Compute role since it is used as a scheduling input for any bare metal workloads.
 ``` 
 yum install openstack-nova-compute  
+```
 
-# Edit /etc/nova/nova.conf – These parameters must be configured on both controller and compute node
-    
+Edit /etc/nova/nova.conf – These parameters must be configured on both controller and compute node:
+```    
 [DEFAULT]
 compute_driver=nova.virt.ironic.IronicDriver
 scheduler_host_manager=nova.scheduler.ironic_host_manager.IronicHostManager
 compute_manager=ironic.nova.compute.manager.ClusteredComputeManager
 
-monkey_patch=true
-monkey_patch_modules=nova.compute.manager:nuage_ironic_nova.nova.compute.manager.decorator,nova.network.neutronv2.api:nuage_ironic_nova.nova.network.neutronv2.api.decorator
-
 [ironic]
 # Ironic keystone admin name
 admin_username=ironic
-admin_password=Alcateldc
+admin_password=<kspass>
 admin_url=http://10.167.36.62:35357/v2.0
 admin_tenant_name=services
 api_endpoint=http://10.167.36.63:6385/v1
-``` 
+```
+
+On the Ironic controller, configure following monkey patch in nova.conf:
+```
+[DEFAULT]
+monkey_patch=true
+monkey_patch_modules=nova.compute.manager:nuage_ironic_nova.nova.compute.manager.decorator,nova.network.neutronv2.api:nuage_ironic_nova.nova.network.neutronv2.api.decorator
+```
 
 ### Installing DHCP server on Ironic Controller
 ```
 yum -y install dhcp
+```
 
-# Edit /etc/dhcp/dhcpd.conf
+Edit /etc/dhcp/dhcpd.conf
+```
 default-lease-time 600;
 max-lease-time 7200;
 
@@ -377,12 +385,12 @@ authoritative;
 subnet 192.168.0.0 netmask 255.255.255.0 {
  # specify the range of lease IP address
  range dynamic-bootp 192.168.0.128 192.168.0.254;
-# specify broadcast address
+ # specify broadcast address
  option broadcast-address 192.168.0.255;
- # specify default gateway
- # option routers 10.0.0.1;
 }
-
+```
+Restart the dhcp server.
+```
 service dhcpd restart
 ``` 
 ### Installing TFTP server 
@@ -540,7 +548,7 @@ https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html#en
 # test IPMI access
 ipmitool -I lanplus -H 10.167.36.125 -U ADMIN -P ADMIN chassis power status
 Chassis Power is on
-
+in
 # Create node, e.g for server6
 ironic node-create -d pxe_ipmitool -n server6
 
@@ -565,7 +573,7 @@ ironic port-update $port_uuid add extra/gateway_name=VSG-pair extra/gateway_port
 Finally, an image can be booted using a traditional Nova boot command, including options for the flavor and the desired tenant network it should be attached to:
 ```
 # Boot image
-nova boot BM.1 --image my-image --flavor my-baremetal-flavor --nic net-id=<uuid of final subnet>
+nova boot BM.1 --image my-image --flavor my-baremetal-flavor --nic net-id=<uuid of final network>
 ```
 
 During the process, we can see the new baremetal in the bootstrapping network
