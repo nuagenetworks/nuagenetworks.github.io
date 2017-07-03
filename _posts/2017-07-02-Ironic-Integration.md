@@ -242,7 +242,7 @@ neutron nuage-gateway-vport-create --tenant-id admin --subnet $provisioning_subn
 
 ## Deploy Ironic Controller VM
 The Ironic Controller can be deployed by following the instructions from
-https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html
+<https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html>
 
 In this application note, the Ironic Controller will be deployed on a Centos 7.3 VM, with 
 * One interface to management network
@@ -343,7 +343,7 @@ The Ironic Conductor node also runs Nova Compute role since it is used as a sche
 yum install openstack-nova-compute  
 ```
 
-Edit /etc/nova/nova.conf – These parameters must be configured on both controller and compute node:
+Edit `/etc/nova/nova.conf` – These parameters must be configured on both controller and compute node:
 ```    
 [DEFAULT]
 compute_driver=nova.virt.ironic.IronicDriver
@@ -395,7 +395,7 @@ service dhcpd restart
 ``` 
 ### Installing TFTP server 
 
-The Ironic Controller will also host a TFTP Server to enable the PXEBOOT process for any new Ironic Node. For further context, we refer here to the Newton guide as is more complete than the Liberty guide: https://docs.openstack.org/project-install-guide/baremetal/newton/setup-drivers.html
+The Ironic Controller will also host a TFTP Server to enable the PXEBOOT process for any new Ironic Node. For further context, we refer here to the Newton guide as is more complete than the Liberty guide: <https://docs.openstack.org/project-install-guide/baremetal/newton/setup-drivers.html>
 
 ```
 mkdir -p /tftpboot
@@ -490,7 +490,7 @@ Note: After restarting the compute service, the nova logs can show following err
 Given the end user will use Nova to boot his/her bare metal through Nova, a Glance disk image is required (supported by a kernel and initrd images). This will be referred to as `my-image`. 
 Also an Ironic Python Agent Image is required to facilitate actions such as inspect, configure, clean and deploy images.
 
-Detailed instructions are on https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html#image-requirements and https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html#building-or-downloading-a-deploy-ramdisk-image
+Detailed instructions are on <https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html#image-requirements> and <https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html#building-or-downloading-a-deploy-ramdisk-image>
 
 ### Create user image 
 
@@ -518,8 +518,7 @@ Note: In case of MC-LAG, the user image should have a LAG  with LACP configured.
 
 ### Create IPA deploy image 
 
-The Ironic Python Agent used in this application note is the one supplied by TripleO project. For this, download `ironic-python-agent.tar` and `ironic-python-agent.tar.md5` from
-https://buildlogs.centos.org/centos/7/cloud/x86_64/tripleo_images/liberty/delorean/
+The Ironic Python Agent used in this application note is the one supplied by TripleO project. For this, download `ironic-python-agent.tar` and `ironic-python-agent.tar.md5` from <https://buildlogs.centos.org/centos/7/cloud/x86_64/tripleo_images/liberty/delorean/>
 
 Verify the checksum, unpack and run following commands to add them into glance. 
 ```
@@ -542,7 +541,7 @@ nova flavor-key my-baremetal-flavor set cpu_arch=x86_64
 
 # Enrollment process 
 
-https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html#enrollment
+From <https://docs.openstack.org/developer/ironic/liberty/deploy/install-guide.html#enrollment>
 
 ```
 # test IPMI access
@@ -577,6 +576,7 @@ nova boot BM.1 --image my-image --flavor my-baremetal-flavor --nic net-id=<uuid 
 ```
 
 During the process, we can see the new baremetal in the bootstrapping network
+
 ![Bare Metal as provisioned in the boostrap network][nuage-bootstrap-nw-with-bm]
 
 
@@ -597,6 +597,7 @@ ironic node-validate server6
 ```
 
 And this is now visible in the Nuage Networks VSD as follows
+
 ![Bare Metal as provisioned in the tenant network][nuage-tenant-nw-with-bm]
 
 # Conclusion
