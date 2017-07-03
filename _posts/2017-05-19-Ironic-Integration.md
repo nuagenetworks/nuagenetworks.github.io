@@ -599,60 +599,8 @@ ironic node-validate server6
 And this is now visible in the Nuage Networks VSD as follows
 ![Bare Metal as provisioned in the tenant network][nuage-tenant-nw-with-bm]
 
-# Debugging
-As an extra to this application note, some basic troubleshooting and debug commands are provided as per the steps described in https://docs.openstack.org/developer/ironic/deploy/troubleshooting.html
-
-## No valid host was found
-https://docs.openstack.org/developer/ironic/deploy/troubleshooting.html#troubleshooting-ironic
-
-```
-ironic node-list --provision-state available --maintenance false --associated false
-
-+--------------------------------------+---------+---------------+-------------+--------------------+-------------+
-| UUID                                 | Name    | Instance UUID | Power State | Provisioning State | Maintenance |
-+--------------------------------------+---------+---------------+-------------+--------------------+-------------+
-| 94faebbe-3c07-4f2c-9e8c-079ba89a2cb9 | server6 | None          | power off   | available          | False       |
-+--------------------------------------+---------+---------------+-------------+--------------------+-------------+
-```
-
-### Make sure the lag exists on the redundancy group
-If not, you might get an index out of range error in nova-compute.log
-Make sure the VLAN is not configured on this lag. This will be done by OpenStack.
-
-### Node in error state 
-
-Make sure the node is in available state
-
-If the node is in error state, and you want to move it back to manageable, first change the state to deleted.
-```
-ironic node-list
-+--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
-| UUID                                 | Name    | Instance UUID                        | Power State | Provisioning State | Maintenance |
-+--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
-| a3da932d-9dfd-440e-ae37-7b46c0f02cb7 | server5 | 14de0f98-e112-42c6-bd0f-b9a0b30fe369 | power on    | active             | False       |
-| 94faebbe-3c07-4f2c-9e8c-079ba89a2cb9 | server6 | None                                 | power off   | error              | False       |
-+--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
-
-ironic --ironic-api-version 1.11 node-set-provision-state  server6 deleted
-
-ironic --ironic-api-version 1.11 node-set-provision-state  server6 manage
-
-ironic --ironic-api-version 1.11 node-set-provision-state  server6 provide
-
-ironic node-list
-+--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
-| UUID                                 | Name    | Instance UUID                        | Power State | Provisioning State | Maintenance |
-+--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
-| a3da932d-9dfd-440e-ae37-7b46c0f02cb7 | server5 | 14de0f98-e112-42c6-bd0f-b9a0b30fe369 | power on    | active             | False       |
-| 94faebbe-3c07-4f2c-9e8c-079ba89a2cb9 | server6 | None                                 | power off   | available          | False       |
-+--------------------------------------+---------+--------------------------------------+-------------+--------------------+-------------+
-```
-
-### Node stuck in bootstrap step
-
-Remove the port in Openstack
-* Ensure VPort, PolicyGropu and ACL in provisioning network are cleaned up
-* Check Permissions on ACL
+# Conclusion
+Through this application note we have demonstrated the use of the OpenStack BareMetal Service (Ironic) in combination with NuageNetworks VSP. Combining the two, an end-user can flexilby boot up a bare metals in its own tenant network without requiring any preprovisioning of the provider. It provides distributed routing, full isolation from other tenants, and does not require a centralized network node for routing to the rest of the tenant infrastructure. 
 
 
 [nuage-target-topology]: {{ site.baseurl}}/img/posts/ironic-integration/nuage-target-topology.png
