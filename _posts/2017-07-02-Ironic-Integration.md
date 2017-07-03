@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Integrating Nuage VSP with Ironic for multi-tenant management of bare-metals (UNDER REVIEW)
+title: Integrating Nuage VSP with Ironic for multi-tenant management of bare-metals
 author: Dieter De Moitie, Jonas Vermeulen
 callout_image: nuage-community-header.jpg
 tags: Openstack Ironic Liberty Bare Metal BareMetal 
