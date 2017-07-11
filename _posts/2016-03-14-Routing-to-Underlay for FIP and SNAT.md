@@ -52,7 +52,7 @@ In a ESXi environment, this can be done directly within the vCenter Integration 
 <figure><center><img src="{{site.baseurl}}/img/posts/routing-to-underlay-for-FIP-SNAT/ESXi-Uplink-Interface.PNG" alt="Configuration of ESXi Uplink Interface"></center></figure>
 
 
-##(Optionally) Configure VRS with separate namespace for enhanced security
+## (Optionally) Configure VRS with separate namespace for enhanced security
 For enhanced security, you may want to configure a separate namespace in your hypervisor.
 
 In a Linux/KVM environment, this is to be done manually before starting up openvswitch process. The following script shows an example on how to do this:
