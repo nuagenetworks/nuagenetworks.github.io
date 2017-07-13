@@ -436,24 +436,6 @@ cp -v /usr/share/syslinux/memdisk /tftpboot
 cp -v /usr/share/syslinux/mboot.c32 /tftpboot
 ```
 
-#### Setup PXE UEFI
-
-```
-sudo yum install grub2-efi shim
-
-sudo cp /boot/efi/EFI/centos/shim.efi /tftpboot/bootx64.efi
-sudo cp /boot/efi/EFI/centos/grubx64.efi /tftpboot/grubx64.efi
-
-GRUB_DIR=/tftpboot/EFI/centos
-sudo mkdir -p $GRUB_DIR
-
-cd $GRUB_DIR
-vim grub.cfg
-
-sudo chmod 644 $GRUB_DIR/grub.cfg
-
-```
-
 ## Create Ironic SQL database
 In this setup, the Ironic SQL database will be installed on the Ironic Controller to ensure full isolation from the rest of the Openstack services.
 ```
@@ -533,10 +515,11 @@ deploy_ramdisk=`glance image-list | grep deploy-initrd | awk '{print $2}'`
 
 ### Create Nova Flavor 
 
-Finally the Nova flavor has to be created as well:
+Finally the Nova flavor has to be created as well. Since PXE boot is only possible in the bootstrap network and not in the tenant network, the local boot option has to be set.
 ```
 nova flavor-create my-baremetal-flavor auto 1024 100 2  # 1024 Mb ram, 100 Gb disk and 2 CPU
 nova flavor-key my-baremetal-flavor set cpu_arch=x86_64
+nova flavor-key my-baremetal-flavor set capabilities:boot_option="local"
 ```
 
 # Enrollment process 
@@ -550,9 +533,6 @@ Chassis Power is on
 in
 # Create node, e.g for server6
 ironic node-create -d pxe_ipmitool -n server6
-
-# Enable UEFI 
-ironic node-update server6 add properties/capabilities='boot_mode:uefi'
 
 # Update flavor, ipmi address/username/password, and deploy images:
 ironic node-update server6 add properties/cpus=2 properties/memory_mb=1024 properties/local_gb=100 properties/cpu_arch=x86_64 properties/capabilities="boot_option:local" driver_info/ipmi_address=10.167.36.126 driver_info/ipmi_username=ADMIN driver_info/ipmi_password=ADMIN driver_info/deploy_kernel=$deploy_kernel driver_info/deploy_ramdisk=$deploy_ramdisk
