@@ -114,7 +114,7 @@ This blog has covered how you can setup networks that stretch multiple datacente
 In the next blog, we will demonstrate what configuration is required on a Nokia Service Router to have it interact with Nuage VSC. It will also cover how you can use _dynamic service provisioning_ to automate such extension, tackling this both from a Nuage VSD UI perspective and by using Ansible playbooks.
 
 
-[TwinDCUnderlay]: {{ site.baseurl}}/img/posts/
-[TwinDCOverlay]: {{ site.baseurl}}/img/posts/
-[RemoteDCUnderlay]: {{ site.baseurl}}/img/posts/
-
+[TwinDCUnderlay]: {{ site.baseurl}}/img/posts/MultiDCNetworking/TwinDCUnderlay.png
+[TwinDCOverlay]: {{ site.baseurl}}/img/posts/MultiDCNetworking/TwinDCOverlay.png
+[RemoteDCUnderlay]: {{ site.baseurl}}/img/posts/RemoteDCUnderlay.png
+[DCGWInterworking]: {{ site.baseurl}}/img/posts/DCGWInterworking.png
