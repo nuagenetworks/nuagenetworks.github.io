@@ -30,6 +30,7 @@ To enable a stretched layer-2 context, the "fabric" of "underlay network" can be
 The most common example of this use case are _Twin DCs_. Twin DCs are defined as two datacenters that have been built close to each other, with the idea of providing geo-resilience while exposing them as 1 logical entity to the application owners.  The most cost effective way to interconnect such closely-located (large) Data Centers is to interconnect the Spine Layer via available fiber or DWDM transport. In that case the IP underlay is simply extended between two or more sites. An example is given in the following picture, in which the underlay network is designed using eBGP.
 
 ![DC underlay interconnect on Spine level][TwinDCUnderlay]
+
 Note: the AS numbers given in the above pictures are pure examples.
 
 eBGP sessions which are already used between Spine and Leaf layer in each DC are used as well between Spine layer between DCs.
@@ -116,5 +117,5 @@ In the next blog, we will demonstrate what configuration is required on a Nokia 
 
 [TwinDCUnderlay]: {{ site.baseurl}}/img/posts/MultiDCNetworking/TwinDCUnderlay.png
 [TwinDCOverlay]: {{ site.baseurl}}/img/posts/MultiDCNetworking/TwinDCOverlay.png
-[RemoteDCUnderlay]: {{ site.baseurl}}/img/posts/RemoteDCUnderlay.png
-[DCGWInterworking]: {{ site.baseurl}}/img/posts/DCGWInterworking.png
+[RemoteDCUnderlay]: {{ site.baseurl}}/img/posts/MultiDCNetworking/RemoteDCUnderlay.png
+[DCGWInterworking]: {{ site.baseurl}}/img/posts/MultiDCNetworking/DCGWInterworking.png
