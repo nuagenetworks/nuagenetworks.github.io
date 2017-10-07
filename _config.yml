@@ -13,6 +13,7 @@ nuage_theme:
 
   # Icons
   rss: true
+  rss_title: "Blogs on nuagenetworks.github.io"
   email_address: # Full email address, e.g. "sam@example.com"
   behance:
   bitbucket:
