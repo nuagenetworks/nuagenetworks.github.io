@@ -92,7 +92,7 @@ My script is `c:\vspk\nuage.psm1`. I wrote a small script that allows me to crea
 [Reflection.Assembly]::LoadFrom("C:\vspk\net.nuagenetworks.vspk.dll")
 
 function New-Enterprise($name) {
-    $s = new-object net.nuagenetworks.vspk.v5_0.VSDSession -argumentlist "csproot", "csproot", "csp", "https://135.121.117.224"
+    $s = new-object net.nuagenetworks.vspk.v5_0.VSDSession -argumentlist "csproot", "csproot", "csp", "https://vsd.local:8443"
     $e = new-object net.nuagenetworks.vspk.v5_0.Enterprise
     $e.NUName = $name
     $s.getMe().createChild($s,$e);
@@ -100,7 +100,7 @@ function New-Enterprise($name) {
 }
 
 function New-Network($enterprise,$subnet,$netmask,$gateway) {
-    $s = new-object net.nuagenetworks.vspk.v5_0.VSDSession -argumentlist "csproot", "csproot", "csp", "https://135.121.117.224"
+    $s = new-object net.nuagenetworks.vspk.v5_0.VSDSession -argumentlist "csproot", "csproot", "csp", "https://vsd.local:8443"
     $e = new-object net.nuagenetworks.vspk.v5_0.Enterprise
     $e.NUId = $enterprise
     $e.fetch($s)
