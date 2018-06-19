@@ -12,7 +12,7 @@ If your Nuage VSP environment is integrated with VMware, then there's a good cha
 # Product Overview
 VMware is both a leader and pioneer in platform virtualization and cloud computing.  The company offers many products and tools to their customers to manage these functions, from bare-metal hypervisors to automation and deployment tools.  The VMware vRealize Suite is a complete Cloud Management Platform for managing an enterprise's private and public cloud resources.
 
-The VMware vRealize Orchestrator (`vRO`) tool integrates with the vRealize Suite to automate network operations.  It offers an easy-to-use interface to combine VMware specific functions and third-party functions into `workflows` that can then be executed manually, scheduled for later execution, triggered from an external script, or run automatically after notification of an external network event.  With vRO, a user could assemble a set of tasks into workflows that interface with vCenter, Active Directory, PowerShell and other endpoints.  
+The VMware vRealize Orchestrator (`vRO`) tool integrates with the vRealize Suite to automate IT operations.  It offers an easy-to-use interface to combine VMware specific functions and third-party functions into `workflows` that can then be executed manually, scheduled for later execution, triggered from an external script, or run automatically after notification of an external event.  With vRO, a user could assemble a set of tasks into workflows that interface with vCenter, Active Directory, PowerShell and other endpoints.  
 
 In 2016, Nuage Networks announced the official release of its VSP vRO Plugin.  You can read the announcement and find links to download the plugin [here](../../../2016/12/13/Official-release-of-the-Nuage-vRO-plugin.html).  Instructions to install the latest version of the plugin can be found in the 'INSTALL.txt' file at the Github repository [here](https://github.com/nuagenetworks/vspk-vro/releases/tag/r5.2.2).  See the `Plugin Setup and Validation` Section below for a visual companion guide to the written instructions found in the 'INSTALL.txt' file.
 
@@ -114,7 +114,7 @@ The Nuage Networks VSP vRO Plugin provides an extensive set of workflows that ca
 
 In these next sections, we will design a custom workflow that invokes 3 Nuage VSP plugin workflows to find, edit and then delete the VSD Enterprise object that we created in the previous section.
 
-## <span style="color: purple">Create the Custom Workflow</span>
+## Create the Custom Workflow
 
 {:start="1"}
 1.  To begin, create a workspace for your new custom workflow.  From the top-level `Workflow` menu option, expand the `Administrator` folder and then expand the `Library` folder below it.  Right-click on the `Library` folder and then select the `Add folder` option from the pop-up menu that appears.  When prompted for a new folder name, enter `My Custom Workflow` and then click the `Ok` button :
@@ -136,7 +136,7 @@ In these next sections, we will design a custom workflow that invokes 3 Nuage VS
 
 ![VRO Custom New Workflow Edit](/img/posts/exploring-vro-part1/VRO-Custom-New-Workflow-Edit.png)
 
-## <span style="color: purple">Add the 1st Workflow Element - Finding an Enterprise</span>
+## Add the 1st Workflow Element - Finding an Enterprise
 
 {:start="1"}
 1.  Remain on the `Schema` tab of the workflow editor and select the `Generic` menu in the left pane.  Drag the `Workflow element` from the group of Generic elements in the left pane to the workflow diagram in the right pane and release it between the `Start` element and `End` element.  When prompted for a Workflow name in the Search box, enter part or all of the string `Find Enterprise in Me` and then double-click the workflow from the list to add it to the schema :
@@ -153,7 +153,7 @@ In these next sections, we will design a custom workflow that invokes 3 Nuage VS
 
 ![VRO Custom Find Enterprise Params](/img/posts/exploring-vro-part1/VRO-Custom-Find-Enterprise-Params.png)
 
-## <span style="color: purple">Add the 1st Scriptable Task Element - Output Original Enterprise Name</span>
+## Add the 1st Scriptable Task Element - Output Original Enterprise Name
 
 {:start="1"}
 1.  In its current state, the custom workflow will use the plugin to locate a VSD Enterprise object, but there is nothing else in the workflow to utilize that object.  Let's add some code to output some attributes from that Enterprise object to the console. Drag the `Scriptable task` element from the group of Generic elements in the left pane to the workflow diagram in the right pane and release it between the `Find Enterprise in Me` element and `End` element :
@@ -195,7 +195,7 @@ In these next sections, we will design a custom workflow that invokes 3 Nuage VS
 
 ![VRO Custom Scriptable Task Save](/img/posts/exploring-vro-part1/VRO-Custom-Scriptable-Task-Save.png)
 
-## <span style="color: purple">Execute the Custom Workflow</span>
+## Execute the Custom Workflow
 
 {:start="1"}
 1.  There are 2 options for executing the custom workflow from the menu.  For option 1, select your custom workflow from the `Workflows` left pane, right-click and then click the `Start workflow ...` item from the pop-up menu.  For option 2, select your custom workflow, and then click the green arrow along the top menu :
@@ -226,7 +226,7 @@ In these next sections, we will design a custom workflow that invokes 3 Nuage VS
 
 In this section, we will expand the custom workflow to include an additional out-of-the-box workflow to illustrate how to edit some of the attributes of a VSD Enterprise object.
  
-## <span style="color: purple">Add the 2nd Workflow Element - Editing an Enterprise</span>
+## Add the 2nd Workflow Element - Editing an Enterprise
 
 {:start="1"}
 1.  From the `Schema` tab of the workflow editor, select the `Generic` menu in the left pane.  Drag the `Workflow element` from the group of Generic elements in the left pane to the workflow diagram in the right pane and release it between the `Scriptable task` element and `End` element.  When prompted for a Workflow name in the Search box, enter part or all of the string `Edit Enterprise` and then double-click the workflow from the list to add it to the schema :
@@ -248,7 +248,7 @@ In this section, we will expand the custom workflow to include an additional out
 
 ![VRO Custom Edit Enterprise Review](/img/posts/exploring-vro-part1/VRO-Custom-Edit-Enterprise-Review.png)
 
-## <span style="color: purple">Add the 2nd Scriptable Task Element - Output Revised Enterprise Name</span>
+## Add the 2nd Scriptable Task Element - Output Revised Enterprise Name
 
 {:start="1"}
 1.  The purpose of the `Edit Enterprise` workflow element is to modify some of the attributes for a given VSD Enterprise object.  We will now include more JavaScript code to output a revised `Name` attributes for that Enterprise object. Drag the `Scriptable task` element from the group of Generic elements in the left pane to the workflow diagram in the right pane and release it between the `Edit Enterprise` element and `End` element :
@@ -280,7 +280,7 @@ Switch to the `Scripting` tab in the bottom pane.  The `enterpriseObj` is now co
 
 ![VRO Custom Scriptable Task 2 Save](/img/posts/exploring-vro-part1/VRO-Custom-Scriptable-Task-2-Save.png)
 
-## <span style="color: purple">Execute the Revised Custom Workflow</span>
+## Execute the Revised Custom Workflow
 
 {:start="1"}
 1.  There are 2 options for executing the custom workflow from the menu.  For option 1, select your custom workflow from the `Workflows` left pane, right-click and then click the `Start workflow ...` item from the pop-up menu.  For option 2, select your custom workflow, and then click the green arrow along the top menu :
@@ -311,7 +311,7 @@ Switch to the `Scripting` tab in the bottom pane.  The `enterpriseObj` is now co
 
 In this section, we will add a final workflow element to the custom workflow to demonstrate how to remove a VSD Enterprise object.
 
-## <span style="color: purple">Add the 3rd Workflow Element - Removing an Enterprise</span>
+## Add the 3rd Workflow Element - Removing an Enterprise
 
 {:start="1"}
 1.  From the `Schema` tab of the workflow editor, select the `Generic` menu in the left pane.  Drag the `Workflow element` from the group of Generic elements in the left pane to the workflow diagram in the right pane and release it between the second `Scriptable task` element and `End` element.  When prompted for a Workflow name in the Search box, enter part or all of the string `Remove Enterprise` and then double-click the workflow from the list to add it to the schema.  Hover your mouse over the element to confirm details such as name and path :
@@ -333,7 +333,7 @@ In this section, we will add a final workflow element to the custom workflow to 
 
 ![VRO Custom Remove Enterprise Save](/img/posts/exploring-vro-part1/VRO-Custom-Remove-Enterprise-Save.png)
 
-## <span style="color: purple">Execute the Final Custom Workflow</span>
+## Execute the Final Custom Workflow
 
 {:start="1"}
 1.  Before executing the workflow, verify that the enterprise is still visible as an object in the VRO Inventory.  Expand the `Me` object from the Inventory menu and then right-click the `Enterprises` object and select the `Reload` option from the small pop-up menu.  The most recent list of Enterprise objects from your instance of VSD will be displayed.  You should see that the enterprise still exists and is named `My Small VRO Enterprise` :
