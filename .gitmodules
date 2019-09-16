@@ -1,6 +1,6 @@
 [submodule "vsd-api-documentation"]
 	path = vsd-api-documentation
-	url = git@github.com:nuagenetworks/vsd-api-documentation.git
+	url = https://github.com/nuagenetworks/vsd-api-documentation
 [submodule "vspkdoc"]
 	path = vspkdoc
-	url = git@github.com:nuagenetworks/vspkdoc.git
+	url = https://github.com/nuagenetworks/vspkdoc
